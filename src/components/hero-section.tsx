@@ -47,7 +47,7 @@ export function HeroSection() {
           <div className="md:w-1/2 relative mt-8 md:mt-0">
             <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-slate-200 shadow-2xl shadow-slate-200/50 bg-slate-50">
               <Image
-                src="/images/hero.png"
+                src="/assets/hero-1.png"
                 alt="NusaLiving AI Dashboard Planning Platform"
                 fill
                 className="object-cover"

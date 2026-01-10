@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/auth-context"
+import { AIChatbot } from "@/components/ai-chatbot"
 
 export default function RootLayout({
   children,
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           {children}
+          <AIChatbot />
         </AuthProvider>
       </body>
     </html>

@@ -3,12 +3,14 @@ import { HeroSection } from "@/components/hero-section"
 import { ProblemSection } from "@/components/problem-section"
 import { SolutionOverview } from "@/components/solution-overview"
 import { FeatureSection } from "@/components/feature-section"
-import { FinancingAlignment } from "@/components/financing-alignment"
+import { BtnIntegration } from "@/components/btn-integration"
+import { DeveloperEcosystem } from "@/components/developer-ecosystem"
 import { ImpactSection } from "@/components/impact-section"
 import { WhyNow } from "@/components/why-now"
 import { PlatformAccess } from "@/components/platform-access"
 import { ClosingStatement } from "@/components/closing-statement"
 import { Footer } from "@/components/footer"
+import { HousingGallery } from "@/components/housing-gallery"
 
 export default function Home() {
   return (
@@ -22,9 +24,9 @@ export default function Home() {
       <section id="features">
         <FeatureSection />
       </section>
-      <section id="financing">
-        <FinancingAlignment />
-      </section>
+      <HousingGallery />
+      <BtnIntegration />
+      <DeveloperEcosystem />
       <section id="impact">
         <ImpactSection />
       </section>

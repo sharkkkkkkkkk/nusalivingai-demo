@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
 
 export function Footer() {
@@ -7,11 +8,11 @@ export function Footer() {
             <div className="container mx-auto px-4 md:px-6">
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg bg-teal-500 flex items-center justify-center">
-                                <span className="text-white font-bold text-lg">N</span>
+                        <div className="flex items-center gap-3">
+                            <div className="relative h-20 w-20 md:h-28 md:w-28">
+                                <Image src="/assets/Logo.png" alt="NusaLiving Logo" fill className="object-contain" />
                             </div>
-                            <span className="text-xl font-bold text-slate-100">NusaLiving AI</span>
+                            <span className="text-xl md:text-3xl font-bold text-slate-100">NusaLiving</span>
                         </div>
                         <p className="text-sm leading-relaxed max-w-xs">
                             Platform perencanaan hunian cerdas yang menghubungkan teknologi, keberlanjutan, dan pembiayaan untuk masa depan Indonesia.
