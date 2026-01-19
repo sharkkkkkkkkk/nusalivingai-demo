@@ -96,8 +96,8 @@ export default function MarketplacePage() {
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-4 border-t">
-                                    <Button variant="outline">Lihat Portofolio</Button>
-                                    <Button className="gap-2">
+                                    <Button variant="outline" onClick={() => alert("Fitur Portofolio Lengkap akan segera hadir!")}>Lihat Portofolio</Button>
+                                    <Button className="gap-2" onClick={() => window.open(`https://wa.me/?text=Halo saya tertarik dengan jasa Anda di NusaLiving`, '_blank')}>
                                         <MessageSquare className="h-4 w-4" />
                                         Hubungi
                                     </Button>

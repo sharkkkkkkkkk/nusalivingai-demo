@@ -1,0 +1,10 @@
+<svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#263238"/>
+  <text x="50%" y="50%" font-family="Arial" font-size="30" fill="#cfd8dc" dominant-baseline="middle" text-anchor="middle">Solar Panel</text>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#546e7a" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect x="100" y="100" width="400" height="400" fill="url(#grid)" stroke="#90a4ae" stroke-width="5"/>
+</svg>

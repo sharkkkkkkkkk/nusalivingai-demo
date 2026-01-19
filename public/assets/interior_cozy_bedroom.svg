@@ -1,0 +1,5 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#cfe9ff"/>
+  <text x="50%" y="50%" font-family="Arial" font-size="40" fill="#5c6bc0" dominant-baseline="middle" text-anchor="middle">Cozy Bedroom</text>
+  <circle cx="400" cy="300" r="100" fill="#90caf9" opacity="0.5"/>
+</svg>

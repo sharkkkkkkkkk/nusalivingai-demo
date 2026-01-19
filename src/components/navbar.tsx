@@ -22,11 +22,11 @@ export function Navbar() {
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 md:px-6 flex items-center justify-between py-2 md:py-3">
-                <Link href="/" className="flex items-center gap-3 md:gap-4">
-                    <div className="relative h-20 w-20 md:h-28 md:w-28">
-                        <Image src="/assets/Logo.png" alt="NusaLiving Logo" fill className="object-contain" />
+                <Link href="/" className="flex items-center gap-3" prefetch={false}>
+                    <div className="relative h-14 w-14">
+                        <Image src="/assets/Logo.png" alt="NusaLiving Logo" fill className="object-contain" priority />
                     </div>
-                    <span className="text-xl md:text-3xl font-bold tracking-tight text-primary">NusaLiving</span>
+                    <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-800 bg-clip-text text-transparent">NusaLiving</span>
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">

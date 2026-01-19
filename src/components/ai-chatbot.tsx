@@ -93,12 +93,17 @@ export function AIChatbot() {
         <>
             {/* Floating Button */}
             {!isOpen && (
-                <Button
-                    onClick={() => setIsOpen(true)}
-                    className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-xl bg-teal-600 hover:bg-teal-700 text-white z-50 animate-bounce-slow"
-                >
-                    <MessageSquare className="h-6 w-6" />
-                </Button>
+                <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2 group">
+                    <div className="bg-white px-3 py-1.5 rounded-lg shadow-md border text-xs font-medium text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none mb-1 whitespace-nowrap">
+                        Klik untuk eksplorasi sistem AI & Teknis
+                    </div>
+                    <Button
+                        onClick={() => setIsOpen(true)}
+                        className="h-14 w-14 rounded-full shadow-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white animate-bounce-slow flex items-center justify-center"
+                    >
+                        <MessageSquare className="h-6 w-6" />
+                    </Button>
+                </div>
             )}
 
             {/* Chat Window */}

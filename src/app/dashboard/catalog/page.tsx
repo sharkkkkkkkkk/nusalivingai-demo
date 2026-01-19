@@ -1,114 +1,70 @@
 "use client"
 
-import Link from "next/link"
-import { ArrowLeft, ShoppingCart, Filter, Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Search, Filter, ShoppingCart } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import Image from "next/image"
 
 export default function CatalogPage() {
     const products = [
-        {
-            id: 1,
-            name: "Modul Kamar Utama A1",
-            category: "Room Module",
-            price: "Rp 15.000.000",
-            image: "bg-slate-200",
-            features: ["3x3 Meter", "Jendela UPVC", "Installasi Listrik"]
-        },
-        {
-            id: 2,
-            name: "Modul Kamar Mandi Kering",
-            category: "Sanitary",
-            price: "Rp 8.500.000",
-            image: "bg-blue-100",
-            features: ["1.5x2 Meter", "Closet Duduk", "Shower Set"]
-        },
-        {
-            id: 3,
-            name: "Paket Struktur Baja Ringan T36",
-            category: "Structure",
-            price: "Rp 25.000.000",
-            image: "bg-slate-300",
-            features: ["Rangka Atap", "Kolom Praktis", "Garansi 10 Th"]
-        },
-        {
-            id: 4,
-            name: "Panel Dinding EPS (Per m²)",
-            category: "Material",
-            price: "Rp 450.000",
-            image: "bg-orange-100",
-            features: ["Tahan Panas", "Kedap Suara", "Pemasangan Cepat"]
-        },
-        {
-            id: 5,
-            name: "Modul Dapur Compact",
-            category: "Room Module",
-            price: "Rp 12.000.000",
-            image: "bg-green-100",
-            features: ["Meja Beton", "Sink Stainless", "Upper Cabinet"]
-        },
-        {
-            id: 6,
-            name: "Smart Door Lock System",
-            category: "IoT Device",
-            price: "Rp 2.500.000",
-            image: "bg-slate-800",
-            features: ["Fingerprint", "App Control", "Battery Backup"]
-        },
+        { id: 1, name: "Batu Bata Merah Jumbo", price: "Rp 800/pcs", category: "Struktur", image: "https://images.unsplash.com/photo-1588019672658-0cb933615392?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
+        { id: 2, name: "Pasir Bangunan Halus", price: "Rp 250.000/m³", category: "Material Dasar", image: "https://images.unsplash.com/photo-1621262372007-88d40786526e?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
+        { id: 3, name: "Semen Padang 50kg", price: "Rp 65.000/sak", category: "Material Dasar", image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
+        { id: 4, name: "Kaca Tempered 8mm", price: "Rp 450.000/m²", category: "Kusen & Kaca", image: "https://images.unsplash.com/photo-1506543730386-880fa9c1f6c4?q=80&w=600&auto=format&fit=crop", stock: "Pre-order" },
+        { id: 5, name: "Kusen Aluminium Silver", price: "Rp 120.000/m", category: "Kusen & Kaca", image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
+        { id: 6, name: "Panel Surya 450W Monocrystalline", price: "Rp 2.500.000/unit", category: "Energi & IoT", image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=600&auto=format&fit=crop", stock: "Available" },
+        { id: 7, name: "Smart Door Lock CCTV", price: "Rp 1.800.000/unit", category: "Energi & IoT", image: "https://images.unsplash.com/photo-1558002038-109177142634?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
+        { id: 8, name: "Modul Dinding Beton Ringan", price: "Rp 150.000/m²", category: "Struktur", image: "https://images.unsplash.com/photo-1533240838150-1df3c15c4856?q=80&w=600&auto=format&fit=crop", stock: "Low Stock" },
     ]
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8">
-            <div className="max-w-6xl mx-auto space-y-8">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold tracking-tight">Katalog Modular</h1>
-                    <Button variant="outline" className="gap-2">
-                        <ShoppingCart className="h-4 w-4" />
-                        <span className="hidden sm:inline">Keranjang (0)</span>
+        <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Material Catalog</h1>
+                    <p className="text-muted-foreground">Katalog material modular dan berkelanjutan terstandarisasi.</p>
+                </div>
+                <div className="flex gap-2">
+                    <Button variant="outline">
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        Cart (0)
                     </Button>
                 </div>
+            </div>
 
-                <div className="flex gap-4 overflow-x-auto pb-4">
-                    <Button variant="default" size="sm" className="rounded-full">Semua</Button>
-                    <Button variant="secondary" size="sm" className="rounded-full">Room Modules</Button>
-                    <Button variant="secondary" size="sm" className="rounded-full">Struktur</Button>
-                    <Button variant="secondary" size="sm" className="rounded-full">Sanitary</Button>
-                    <Button variant="secondary" size="sm" className="rounded-full">IoT</Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input placeholder="Cari material (semen, bata, panel...)" className="pl-10" />
                 </div>
+                <Button variant="outline">
+                    <Filter className="mr-2 h-4 w-4" />
+                    Filter
+                </Button>
+            </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {products.map((product) => (
-                        <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                            <div className={`aspect-video w-full ${product.image} flex items-center justify-center text-muted-foreground/50`}>
-                                <div className="text-4xl font-black opacity-10">IMG</div>
-                            </div>
-                            <CardHeader>
-                                <div className="flex justify-between items-start mb-2">
-                                    <Badge variant="secondary" className="text-xs">{product.category}</Badge>
-                                </div>
-                                <CardTitle className="text-lg">{product.name}</CardTitle>
-                                <div className="text-xl font-bold text-primary mt-1">{product.price}</div>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="text-sm text-slate-500 space-y-1">
-                                    {product.features.map((feature, i) => (
-                                        <li key={i} className="flex items-center gap-2">
-                                            <div className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                            <CardFooter>
-                                <Button className="w-full gap-2 group">
-                                    <Plus className="h-4 w-4 group-hover:scale-125 transition-transform" />
-                                    Tambah ke Rencana
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {products.map((product) => (
+                    <Card key={product.id} className="overflow-hidden group hover:shadow-lg transition-all duration-300">
+                        <div className="aspect-square bg-slate-100 relative overflow-hidden">
+                            <Image
+                                src={product.image}
+                                alt={product.name}
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                            <Badge className="absolute top-2 right-2 bg-white/90 text-slate-800 hover:bg-white border-none shadow-sm">{product.stock}</Badge>
+                        </div>
+                        <CardContent className="p-4">
+                            <div className="text-xs text-muted-foreground mb-1">{product.category}</div>
+                            <CardTitle className="text-base line-clamp-1 mb-2">{product.name}</CardTitle>
+                            <div className="font-bold text-lg text-primary">{product.price}</div>
+                            <Button className="w-full mt-4" size="sm">Tambah ke Proyek</Button>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
         </div>
     )
