@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/context/auth-context"
 import { AIChatbot } from "@/components/ai-chatbot"
+import { ThemeProvider } from "@/components/theme-provider"
+import { LanguageProvider } from "@/context/language-context"
 
 export default function RootLayout({
   children,
@@ -21,8 +23,17 @@ export default function RootLayout({
     <html lang="id">
       <body className={inter.className}>
         <AuthProvider>
-          {children}
-          <AIChatbot />
+          <LanguageProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <AIChatbot />
+            </ThemeProvider>
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

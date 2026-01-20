@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useAuth } from "@/context/auth-context"
+import { useLanguage } from "@/context/language-context"
 import { ArrowUpRight, Clock, Plus, Home as HomeIcon, Map as MapIcon, MessageSquare, ShieldCheck, Wifi } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 
 export default function DashboardPage() {
     const { user } = useAuth()
+    const { t } = useLanguage()
 
     const projects = [
         {
@@ -18,7 +20,7 @@ export default function DashboardPage() {
             status: "Planning",
             date: "2 hari yang lalu",
             progress: 25,
-            image: "bg-blue-100"
+            image: "/images/housing-complex.jpg"
         },
         {
             id: 2,
@@ -27,7 +29,7 @@ export default function DashboardPage() {
             status: "Draft",
             date: "1 minggu yang lalu",
             progress: 10,
-            image: "bg-orange-100"
+            image: "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?auto=format&fit=crop&w=800&q=80"
         }
     ]
 
@@ -36,13 +38,13 @@ export default function DashboardPage() {
             {/* Welcome Banner */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Selamat Pagi, {user?.name.split(' ')[0] || 'User'} 👋</h1>
-                    <p className="text-slate-500">Siap melanjutkan perencanaan hunian hari ini?</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t("dashboard.welcome")}, {user?.name.split(' ')[0] || 'User'} 👋</h1>
+                    <p className="text-slate-500">{t("dashboard.subtitle")}</p>
                 </div>
                 <Link href="/dashboard/planner">
                     <Button className="gap-2 shadow-lg shadow-primary/25">
                         <Plus className="h-4 w-4" />
-                        Buat Proyek Baru
+                        {t("dashboard.newProject")}
                     </Button>
                 </Link>
             </div>
@@ -51,45 +53,51 @@ export default function DashboardPage() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Proyek</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.totalProjects")}</CardTitle>
                         <HomeIcon className="h-4 w-4 text-slate-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">2</div>
-                        <p className="text-xs text-muted-foreground">+1 bulan ini</p>
+                        <p className="text-xs text-muted-foreground">+1 {t("dashboard.thisMonth")}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Estimasi Biaya</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.estimatedCost")}</CardTitle>
                         <Coins className="h-4 w-4 text-slate-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">Rp 185Jt</div>
-                        <p className="text-xs text-muted-foreground">Proyek utama</p>
+                        <p className="text-xs text-muted-foreground">{t("dashboard.mainProject")}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Kesiapan Dokumen</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{t("dashboard.documentReady")}</CardTitle>
                         <FileCheck className="h-4 w-4 text-slate-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">40%</div>
-                        <p className="text-xs text-muted-foreground">Perlu dilengkapi</p>
+                        <p className="text-xs text-muted-foreground">{t("dashboard.needsCompletion")}</p>
                     </CardContent>
                 </Card>
             </div>
 
             {/* Active Projects Grid */}
             <div>
-                <h2 className="text-xl font-semibold mb-4">Proyek Aktif</h2>
+                <h2 className="text-xl font-semibold mb-4">{t("dashboard.activeProjects")}</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((project) => (
                         <Card key={project.id} className="group hover:border-primary/50 transition-colors cursor-pointer">
-                            <div className={`h-32 w-full ${project.image} relative`}>
+                            <div className="h-32 w-full relative overflow-hidden bg-slate-100">
+                                <img
+                                    src={project.image}
+                                    alt={project.name}
+                                    className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                                 <div className="absolute top-3 right-3">
-                                    <Badge variant={project.status === "Planning" ? "default" : "secondary"}>
+                                    <Badge variant={project.status === "Planning" ? "default" : "secondary"} className="shadow-sm">
                                         {project.status}
                                     </Badge>
                                 </div>
@@ -104,7 +112,7 @@ export default function DashboardPage() {
                             <CardContent>
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-xs text-muted-foreground">
-                                        <span>Progress</span>
+                                        <span>{t("dashboard.progress")}</span>
                                         <span>{project.progress}%</span>
                                     </div>
                                     <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
@@ -112,7 +120,7 @@ export default function DashboardPage() {
                                     </div>
                                     <div className="pt-2 flex items-center gap-2 text-xs text-slate-400">
                                         <Clock className="h-3 w-3" />
-                                        Diupdate {project.date}
+                                        {t("dashboard.updated")} {project.date}
                                     </div>
                                 </div>
                             </CardContent>
@@ -125,15 +133,15 @@ export default function DashboardPage() {
                             <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
                                 <Plus className="h-6 w-6 text-slate-400" />
                             </div>
-                            <h3 className="font-semibold text-slate-600">Mulai Proyek Baru</h3>
-                            <p className="text-sm text-slate-400">Rencanakan hunian atau renovasi</p>
+                            <h3 className="font-semibold text-slate-600">{t("dashboard.startNew")}</h3>
+                            <p className="text-sm text-slate-400">{t("dashboard.planHousing")}</p>
                         </Card>
                     </Link>
                 </div>
             </div>
             {/* Smart Tools Quick Access */}
             <div>
-                <h2 className="text-xl font-semibold mb-4">Smart Tools</h2>
+                <h2 className="text-xl font-semibold mb-4">{t("dashboard.smartTools")}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Link href="/dashboard/site-scan">
                         <Card className="hover:bg-slate-50 transition-colors cursor-pointer border-none shadow-sm bg-teal-50/50">

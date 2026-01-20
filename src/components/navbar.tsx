@@ -15,9 +15,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { SettingsToggle } from "@/components/settings-toggle"
+import { useLanguage } from "@/context/language-context"
 
 export function Navbar() {
     const { user, logout } = useAuth()
+
+    const { t } = useLanguage()
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -30,13 +34,14 @@ export function Navbar() {
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-                    <Link href="/#features" className="hover:text-primary transition-colors">Fitur</Link>
-                    <Link href="/#solution" className="hover:text-primary transition-colors">Solusi</Link>
-                    <Link href="/#impact" className="hover:text-primary transition-colors">Dampak</Link>
-                    <Link href="/#financing" className="hover:text-primary transition-colors">Pembiayaan</Link>
+                    <Link href="/#features" className="hover:text-primary transition-colors">{t("nav.features")}</Link>
+                    <Link href="/#solution" className="hover:text-primary transition-colors">{t("nav.solution")}</Link>
+                    <Link href="/#impact" className="hover:text-primary transition-colors">{t("nav.impact")}</Link>
+                    <Link href="/#financing" className="hover:text-primary transition-colors">{t("nav.financing")}</Link>
                 </nav>
 
                 <div className="hidden md:flex items-center gap-4">
+                    <SettingsToggle />
                     {user ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -71,16 +76,17 @@ export function Navbar() {
                     ) : (
                         <>
                             <Link href="/login">
-                                <Button variant="ghost">Masuk</Button>
+                                <Button variant="ghost">{t("nav.login")}</Button>
                             </Link>
                             <Link href="/register">
-                                <Button>Daftar Sekarang</Button>
+                                <Button>{t("nav.register")}</Button>
                             </Link>
                         </>
                     )}
                 </div>
 
-                <div className="md:hidden">
+                <div className="md:hidden flex items-center gap-2">
+                    <SettingsToggle />
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -89,12 +95,20 @@ export function Navbar() {
                         </SheetTrigger>
                         <SheetContent>
                             <div className="flex flex-col gap-4 mt-8">
-                                <Link href="/login" className="w-full">
-                                    <Button variant="outline" className="w-full">Masuk</Button>
-                                </Link>
-                                <Link href="/register" className="w-full">
-                                    <Button className="w-full">Daftar</Button>
-                                </Link>
+                                <nav className="flex flex-col gap-3 mb-4">
+                                    <Link href="/#features" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.features")}</Link>
+                                    <Link href="/#solution" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.solution")}</Link>
+                                    <Link href="/#impact" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.impact")}</Link>
+                                    <Link href="/#financing" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.financing")}</Link>
+                                </nav>
+                                <div className="border-t pt-4 flex flex-col gap-2">
+                                    <Link href="/login" className="w-full">
+                                        <Button variant="outline" className="w-full">{t("nav.login")}</Button>
+                                    </Link>
+                                    <Link href="/register" className="w-full">
+                                        <Button className="w-full">{t("nav.register")}</Button>
+                                    </Link>
+                                </div>
                             </div>
                         </SheetContent>
                     </Sheet>

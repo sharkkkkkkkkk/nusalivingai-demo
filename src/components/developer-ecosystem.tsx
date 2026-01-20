@@ -78,21 +78,41 @@ export function DeveloperEcosystem() {
                             {/* Conceptual Image for Developer Dashboard */}
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="w-3/4 h-3/4 relative">
-                                    <div className="absolute top-0 right-0 w-full h-full bg-white rounded-lg shadow-xl border p-4 transform rotate-3 transition-transform hover:rotate-0">
-                                        <div className="flex items-center gap-4 mb-4 border-b pb-4">
-                                            <div className="w-12 h-12 bg-slate-200 rounded animate-pulse"></div>
-                                            <div className="space-y-2 flex-1">
-                                                <div className="h-4 bg-slate-200 rounded w-1/2 animate-pulse"></div>
-                                                <div className="h-3 bg-slate-200 rounded w-1/3 animate-pulse"></div>
+                                    <div className="absolute top-0 right-0 w-full h-fit bg-white rounded-xl shadow-2xl border p-5 transform rotate-2 transition-transform hover:rotate-0 duration-500">
+                                        <div className="flex items-center gap-3 mb-4 border-b pb-4">
+                                            <div className="h-10 w-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <Briefcase className="h-5 w-5 text-primary" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-sm text-slate-800 leading-tight">Project hunianmu dimulai dari sini</h4>
+                                                <p className="text-[10px] text-slate-500 mt-0.5">Kelola aset cerdas dalam satu genggaman</p>
                                             </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <div className="h-20 bg-slate-100 rounded w-full border border-dashed flex items-center justify-center text-slate-400 text-xs">
-                                                Upload Project Data
+
+                                        <div className="space-y-3">
+                                            <div className="relative aspect-video w-full rounded-lg overflow-hidden group">
+                                                <img
+                                                    src="/images/smart-house-control.jpg"
+                                                    alt="Smart House"
+                                                    className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700 absolute inset-0"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                                                    <div className="text-white">
+                                                        <p className="text-[10px] font-medium opacity-90">Cluster Nusa Indah</p>
+                                                        <p className="text-[8px] opacity-75">Smart Home Integrated</p>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                             <div className="grid grid-cols-2 gap-2">
-                                                <div className="h-8 bg-primary/20 rounded"></div>
-                                                <div className="h-8 bg-slate-100 rounded"></div>
+                                                <div className="bg-slate-50 p-2 rounded border text-center">
+                                                    <p className="text-[10px] text-slate-500">Leads Total</p>
+                                                    <p className="font-bold text-primary text-sm">1,240</p>
+                                                </div>
+                                                <div className="bg-slate-50 p-2 rounded border text-center">
+                                                    <p className="text-[10px] text-slate-500">Terjual</p>
+                                                    <p className="font-bold text-green-600 text-sm">85%</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -17,6 +17,7 @@ export default function MarketplacePage() {
             rating: 4.8,
             projects: 24,
             verified: true,
+            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
             tags: ["Minimalis", "Tropical", "Budget Expert"]
         },
         {
@@ -27,6 +28,7 @@ export default function MarketplacePage() {
             rating: 4.9,
             projects: 156,
             verified: true,
+            image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=400&q=80",
             tags: ["Konstruksi Cepat", "Renovasi", "Garansi Estructural"]
         },
         {
@@ -37,6 +39,7 @@ export default function MarketplacePage() {
             rating: 4.7,
             projects: 12,
             verified: false,
+            image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80",
             tags: ["Scandinavian", "Small Space"]
         },
         {
@@ -47,6 +50,7 @@ export default function MarketplacePage() {
             rating: 4.6,
             projects: 40,
             verified: true,
+            image: "https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=400&q=80",
             tags: ["Tenaga Lokal", "Spesialis Kayu"]
         },
     ]
@@ -63,7 +67,7 @@ export default function MarketplacePage() {
                         <Card key={pro.id} className="flex flex-col sm:flex-row overflow-hidden hover:border-primary/50 transition-colors">
                             <div className="w-full sm:w-48 bg-slate-100 flex items-center justify-center p-6">
                                 <Avatar className="h-24 w-24">
-                                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${pro.name}`} />
+                                    <AvatarImage src={pro.image} className="object-cover" />
                                     <AvatarFallback>{pro.name[0]}</AvatarFallback>
                                 </Avatar>
                             </div>

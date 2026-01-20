@@ -34,13 +34,34 @@ export function ProblemSection() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 lg:gap-12 items-center">
-                    <div className="relative aspect-square w-full max-w-md mx-auto overflow-hidden rounded-2xl shadow-xl">
-                        <Image
-                            src="/images/problem.png"
-                            alt="Housing Challenges Illustration"
-                            fill
-                            className="object-cover"
-                        />
+                    <div className="grid grid-rows-2 gap-4 w-full max-w-md mx-auto">
+                        {/* Housing Growth Chart */}
+                        <div className="relative aspect-video w-full overflow-hidden rounded-xl shadow-lg group">
+                            <Image
+                                src="https://cdn.visiteliti.com/cms/assets/news_image/berita_valid1562751346.jpg"
+                                alt="Annual Housing Sales Growth Chart"
+                                fill
+                                className="object-cover transition-transform group-hover:scale-105 duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                            <div className="absolute bottom-3 left-3 text-white">
+                                <p className="text-xs font-semibold drop-shadow-lg">Pertumbuhan Tahunan Penjualan Rumah</p>
+                            </div>
+                        </div>
+
+                        {/* Modern Housing Complex */}
+                        <div className="relative aspect-video w-full overflow-hidden rounded-xl shadow-lg group">
+                            <Image
+                                src="/images/modern-housing.jpg"
+                                alt="Modern Housing Complex"
+                                fill
+                                className="object-cover transition-transform group-hover:scale-105 duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                            <div className="absolute bottom-3 left-3 text-white">
+                                <p className="text-xs font-semibold drop-shadow-lg">Hunian Modern Berkelanjutan</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="grid gap-6">

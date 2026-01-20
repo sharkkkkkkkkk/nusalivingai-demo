@@ -31,13 +31,13 @@ export function FeatureSection() {
             title: "Blockchain-based Verification",
             description: "Sistem pencatatan dokumen dan riwayat proyek berbasis hash untuk transparansi dan kepercayaan (Future-ready).",
             icon: ShieldCheck,
-            href: "/features/blockchain",
+            href: "/dashboard/blockchain",
         },
         {
             title: "IoT Housing Dashboard",
             description: "Monitoring konsumsi energi dan air untuk mendukung efisiensi dan pelaporan ESG sederhana (Optional).",
             icon: Activity,
-            href: "/features/iot",
+            href: "/dashboard/iot",
         },
     ]
 

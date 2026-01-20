@@ -40,7 +40,7 @@ export default function MaterialScannerPage() {
                     {!result && !scanning && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-100">
                             <img
-                                src="/images/catalog/bricks.jpg"
+                                src="https://images.unsplash.com/photo-1590074256249-1c7ec833448f?auto=format&fit=crop&w=800&q=80"
                                 className="absolute inset-0 w-full h-full object-cover opacity-50 blur-sm mix-blend-multiply"
                                 alt="Camera Feed"
                             />
@@ -55,7 +55,7 @@ export default function MaterialScannerPage() {
                     {scanning && (
                         <div className="absolute inset-0 bg-black/60 z-20 flex flex-col items-center justify-center">
                             <img
-                                src="/images/catalog/bricks.jpg"
+                                src="https://images.unsplash.com/photo-1590074256249-1c7ec833448f?auto=format&fit=crop&w=800&q=80"
                                 className="absolute inset-0 w-full h-full object-cover opacity-80"
                                 alt="Scanning..."
                             />

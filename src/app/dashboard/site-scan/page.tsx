@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Upload, Info } from "lucide-react"
 
 // Dynamically import the map component to avoid SSR issues with Leaflet
 const RiskAnalysisMap = dynamic(
@@ -58,60 +60,107 @@ export default function SiteScanPage() {
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Left Column: Map & Input */}
                     <div className="lg:col-span-2 space-y-6">
-                        <Card className="overflow-hidden border-slate-200 shadow-sm">
-                            <CardHeader className="bg-white border-b border-slate-100">
-                                <CardTitle className="text-lg">Pilih Lokasi Lahan</CardTitle>
-                                <CardDescription>Klik pada peta untuk menentukan lokasi yang ingin dianalisis.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-0">
-                                <RiskAnalysisMap onLocationSelect={handleLocationSelect} />
-                            </CardContent>
-                        </Card>
+                        <Tabs defaultValue="map" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 mb-4">
+                                <TabsTrigger value="map">Analisis Peta</TabsTrigger>
+                                <TabsTrigger value="photo">Upload Foto Lokasi</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="map">
+                                <Card className="overflow-hidden border-slate-200 shadow-sm">
+                                    <CardHeader className="bg-white border-b border-slate-100">
+                                        <CardTitle className="text-lg">Pilih Lokasi Lahan</CardTitle>
+                                        <CardDescription>Klik pada peta untuk menentukan lokasi yang ingin dianalisis.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="p-0">
+                                        <RiskAnalysisMap onLocationSelect={handleLocationSelect} />
+                                    </CardContent>
+                                </Card>
+                                <Card className="mt-6">
+                                    <CardContent className="pt-6">
+                                        <form onSubmit={handleScan} className="space-y-4">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium">Alamat Lengkap</label>
+                                                <div className="relative">
+                                                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                                    <Input
+                                                        value={addressInput}
+                                                        onChange={(e) => setAddressInput(e.target.value)}
+                                                        placeholder="Cari lokasi atau klik pada peta..."
+                                                        className="pl-10"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
 
-                        <Card>
-                            <CardContent className="pt-6">
-                                <form onSubmit={handleScan} className="space-y-4">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium">Alamat Lengkap</label>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                value={addressInput}
-                                                onChange={(e) => setAddressInput(e.target.value)}
-                                                placeholder="Cari lokasi atau klik pada peta..."
-                                                className="pl-10"
-                                                required
-                                            />
+                                            {locationDetails && (
+                                                <div className="grid grid-cols-2 gap-4 text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border">
+                                                    <div>
+                                                        <span className="block font-semibold text-slate-700">Desa/Kelurahan</span>
+                                                        {locationDetails.village || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="block font-semibold text-slate-700">Kecamatan</span>
+                                                        {locationDetails.subdistrict || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="block font-semibold text-slate-700">Kabupaten/Kota</span>
+                                                        {locationDetails.regency || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="block font-semibold text-slate-700">Provinsi</span>
+                                                        {locationDetails.province || "-"}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <Button type="submit" disabled={loading || !addressInput} className="w-full bg-teal-600 hover:bg-teal-700 font-bold h-11">
+                                                {loading ? "Sedang Menganalisis..." : "Mulai Analisis AI"}
+                                            </Button>
+                                        </form>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                            <TabsContent value="photo">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>AI Vision Analysis</CardTitle>
+                                        <CardDescription>Unggah foto lokasi tanah untuk deteksi vegetasi, kontur, dan lingkungan sekitar secara otomatis.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="border-2 border-dashed rounded-lg p-12 text-center hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => document.getElementById('file-upload')?.click()}>
+                                            <div className="bg-teal-50 p-4 rounded-full inline-block mb-4">
+                                                <Upload className="h-8 w-8 text-teal-600" />
+                                            </div>
+                                            <h3 className="font-medium">Klik untuk upload foto</h3>
+                                            <p className="text-xs text-slate-500 mt-1">Format: JPG, PNG (Max 5MB)</p>
+                                            <input id="file-upload" type="file" className="hidden" onChange={(e) => {
+                                                // Mock upload behavior
+                                                if (e.target.files?.[0]) {
+                                                    setLoading(true)
+                                                    setTimeout(() => {
+                                                        setLoading(false)
+                                                        setResult({
+                                                            zone: "Visual Detection: Lahan Kosong Bervegetasi",
+                                                            risk: "Medium (Perlu Cut & Fill)",
+                                                            access: "Jalan Tanah (Perlu Pengerasan)",
+                                                            price: "Estimasi: Rp 1.500.000 / m2",
+                                                            soil: "Tanah Humus (Subur)",
+                                                            permit: "Zona Kuning (Residential)"
+                                                        })
+                                                    }, 2500)
+                                                }
+                                            }} />
                                         </div>
-                                    </div>
-
-                                    {locationDetails && (
-                                        <div className="grid grid-cols-2 gap-4 text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border">
-                                            <div>
-                                                <span className="block font-semibold text-slate-700">Desa/Kelurahan</span>
-                                                {locationDetails.village || "-"}
-                                            </div>
-                                            <div>
-                                                <span className="block font-semibold text-slate-700">Kecamatan</span>
-                                                {locationDetails.subdistrict || "-"}
-                                            </div>
-                                            <div>
-                                                <span className="block font-semibold text-slate-700">Kabupaten/Kota</span>
-                                                {locationDetails.regency || "-"}
-                                            </div>
-                                            <div>
-                                                <span className="block font-semibold text-slate-700">Provinsi</span>
-                                                {locationDetails.province || "-"}
-                                            </div>
+                                        <div className="flex gap-4 items-start bg-blue-50 p-4 rounded-lg">
+                                            <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                                            <p className="text-xs text-blue-700">
+                                                AI Vision kami akan menganalisis objek dalam foto seperti kepadatan vegetasi, kemiringan tanah, dan keberadaan sumber air permukaan.
+                                            </p>
                                         </div>
-                                    )}
-
-                                    <Button type="submit" disabled={loading || !addressInput} className="w-full bg-teal-600 hover:bg-teal-700 font-bold h-11">
-                                        {loading ? "Sedang Menganalisis..." : "Mulai Analisis AI"}
-                                    </Button>
-                                </form>
-                            </CardContent>
-                        </Card>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
                     </div>
 
                     {/* Right Column: Results */}
