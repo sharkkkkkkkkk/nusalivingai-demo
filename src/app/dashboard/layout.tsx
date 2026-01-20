@@ -4,14 +4,18 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard,
-    Map,
+    Map as MapIcon,
     Home,
     Package,
     Store,
     Settings,
     LogOut,
     Menu,
-    Bell
+    Bell,
+    Wifi,
+    ShieldCheck,
+    MessageSquare,
+    ScanLine
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -45,7 +49,11 @@ export default function DashboardLayout({
     const navigation = [
         { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
         { name: "My Planner", href: "/dashboard/planner", icon: Home },
-        { name: "Site Analysis", href: "/dashboard/site-scan", icon: Map },
+        { name: "Smart Home (IoT)", href: "/dashboard/iot", icon: Wifi },
+        { name: "Blockchain Verify", href: "/dashboard/blockchain", icon: ShieldCheck },
+        { name: "AI Design Chat", href: "/dashboard/design-chat", icon: MessageSquare },
+        { name: "Material Scanner", href: "/dashboard/scanner", icon: ScanLine },
+        { name: "Site Analysis", href: "/dashboard/site-scan", icon: MapIcon },
         { name: "Material Catalog", href: "/dashboard/catalog", icon: Package },
         { name: "Jasa Ahli", href: "/dashboard/marketplace", icon: Store },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -57,8 +65,8 @@ export default function DashboardLayout({
             <aside className="hidden w-64 flex-col border-r bg-white md:flex">
                 <div className="flex h-16 items-center px-6 border-b">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">N</span>
+                        <div className="relative w-8 h-8">
+                            <img src="/assets/Logo.png" alt="Logo" className="object-contain w-full h-full" />
                         </div>
                         <span className="text-lg font-bold tracking-tight text-slate-900">NusaLiving</span>
                     </Link>

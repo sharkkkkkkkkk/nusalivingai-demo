@@ -9,14 +9,14 @@ import Image from "next/image"
 
 export default function CatalogPage() {
     const products = [
-        { id: 1, name: "Batu Bata Merah Jumbo", price: "Rp 800/pcs", category: "Struktur", image: "https://images.unsplash.com/photo-1588019672658-0cb933615392?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
-        { id: 2, name: "Pasir Bangunan Halus", price: "Rp 250.000/m³", category: "Material Dasar", image: "https://images.unsplash.com/photo-1621262372007-88d40786526e?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
-        { id: 3, name: "Semen Padang 50kg", price: "Rp 65.000/sak", category: "Material Dasar", image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
-        { id: 4, name: "Kaca Tempered 8mm", price: "Rp 450.000/m²", category: "Kusen & Kaca", image: "https://images.unsplash.com/photo-1506543730386-880fa9c1f6c4?q=80&w=600&auto=format&fit=crop", stock: "Pre-order" },
-        { id: 5, name: "Kusen Aluminium Silver", price: "Rp 120.000/m", category: "Kusen & Kaca", image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
-        { id: 6, name: "Panel Surya 450W Monocrystalline", price: "Rp 2.500.000/unit", category: "Energi & IoT", image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=600&auto=format&fit=crop", stock: "Available" },
-        { id: 7, name: "Smart Door Lock CCTV", price: "Rp 1.800.000/unit", category: "Energi & IoT", image: "https://images.unsplash.com/photo-1558002038-109177142634?q=80&w=600&auto=format&fit=crop", stock: "Ready" },
-        { id: 8, name: "Modul Dinding Beton Ringan", price: "Rp 150.000/m²", category: "Struktur", image: "https://images.unsplash.com/photo-1533240838150-1df3c15c4856?q=80&w=600&auto=format&fit=crop", stock: "Low Stock" },
+        { id: 1, name: "Batu Bata Merah Jumbo", price: "Rp 800/pcs", category: "Struktur", image: "/images/catalog/bricks.jpg", stock: "Ready" },
+        { id: 2, name: "Pasir Bangunan Halus", price: "Rp 250.000/m³", category: "Material Dasar", image: "/images/catalog/sand.jpg", stock: "Ready" },
+        { id: 3, name: "Semen Padang 50kg", price: "Rp 65.000/sak", category: "Material Dasar", image: "/images/catalog/cement.jpg", stock: "Ready" },
+        { id: 4, name: "Kaca Tempered 8mm", price: "Rp 450.000/m²", category: "Kusen & Kaca", image: "/images/catalog/glass.jpg", stock: "Pre-order" },
+        { id: 5, name: "Kusen Aluminium Silver", price: "Rp 120.000/m", category: "Kusen & Kaca", image: "/images/catalog/aluminium.jpg", stock: "Ready" },
+        { id: 6, name: "Panel Surya 450W Monocrystalline", price: "Rp 2.500.000/unit", category: "Energi & IoT", image: "/images/catalog/solar_panel.jpg", stock: "Available" },
+        { id: 7, name: "Smart Door Lock CCTV", price: "Rp 1.800.000/unit", category: "Energi & IoT", image: "/images/catalog/smart_lock.jpg", stock: "Ready" },
+        { id: 8, name: "Bata Ringan Hebel (AAC)", price: "Rp 650.000/m³", category: "Struktur", image: "/images/catalog/hebel.jpg", stock: "Low Stock" },
     ]
 
     return (

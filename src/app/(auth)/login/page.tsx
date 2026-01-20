@@ -38,10 +38,14 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1 text-center">
-                    <div className="flex justify-center mb-4">
-                        <Link href="/" className="flex items-center gap-2">
-                            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                                <span className="text-white font-bold text-xl">N</span>
+                    <div className="flex justify-center mb-6">
+                        <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
+                            <div className="relative w-24 h-24">
+                                <img
+                                    src="/assets/Logo.png"
+                                    alt="NusaLiving Logo"
+                                    className="object-contain w-full h-full"
+                                />
                             </div>
                         </Link>
                     </div>

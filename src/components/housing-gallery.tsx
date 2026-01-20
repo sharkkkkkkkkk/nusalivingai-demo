@@ -17,7 +17,7 @@ export function HousingGallery() {
             label: "Ruang Tamu Modern"
         },
         {
-            src: "https://images.unsplash.com/photo-1616594039964-40891a904672?q=80&w=1000&auto=format&fit=crop",
+            src: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?q=80&w=1000&auto=format&fit=crop",
             alt: "Cozy modern bedroom interior warm lighting",
             label: "Kamar Tidur Nyaman"
         },

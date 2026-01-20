@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useAuth } from "@/context/auth-context"
-import { ArrowUpRight, Clock, Plus, Home as HomeIcon } from "lucide-react"
+import { ArrowUpRight, Clock, Plus, Home as HomeIcon, Map as MapIcon, MessageSquare, ShieldCheck, Wifi } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -127,6 +127,52 @@ export default function DashboardPage() {
                             </div>
                             <h3 className="font-semibold text-slate-600">Mulai Proyek Baru</h3>
                             <p className="text-sm text-slate-400">Rencanakan hunian atau renovasi</p>
+                        </Card>
+                    </Link>
+                </div>
+            </div>
+            {/* Smart Tools Quick Access */}
+            <div>
+                <h2 className="text-xl font-semibold mb-4">Smart Tools</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Link href="/dashboard/site-scan">
+                        <Card className="hover:bg-slate-50 transition-colors cursor-pointer border-none shadow-sm bg-teal-50/50">
+                            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                                <div className="p-2 bg-teal-100 rounded-full">
+                                    <MapIcon className="h-5 w-5 text-teal-600" />
+                                </div>
+                                <span className="font-medium text-sm">AI Site Scan</span>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/dashboard/design-chat">
+                        <Card className="hover:bg-slate-50 transition-colors cursor-pointer border-none shadow-sm bg-indigo-50/50">
+                            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                                <div className="p-2 bg-indigo-100 rounded-full">
+                                    <MessageSquare className="h-5 w-5 text-indigo-600" />
+                                </div>
+                                <span className="font-medium text-sm">Design Assistant</span>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/dashboard/blockchain">
+                        <Card className="hover:bg-slate-50 transition-colors cursor-pointer border-none shadow-sm bg-blue-50/50">
+                            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                                <div className="p-2 bg-blue-100 rounded-full">
+                                    <ShieldCheck className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <span className="font-medium text-sm">Smart Contract</span>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/dashboard/iot">
+                        <Card className="hover:bg-slate-50 transition-colors cursor-pointer border-none shadow-sm bg-amber-50/50">
+                            <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                                <div className="p-2 bg-amber-100 rounded-full">
+                                    <Wifi className="h-5 w-5 text-amber-600" />
+                                </div>
+                                <span className="font-medium text-sm">Smart Home</span>
+                            </CardContent>
                         </Card>
                     </Link>
                 </div>
