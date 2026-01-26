@@ -20,6 +20,11 @@ const translations: Record<string, Record<Language, string>> = {
     "nav.register": { id: "Daftar Sekarang", en: "Register Now" },
     "nav.dashboard": { id: "Dashboard", en: "Dashboard" },
     "nav.logout": { id: "Keluar", en: "Log out" },
+    "nav.find": { id: "Cari Hunian", en: "Find Home" },
+    "nav.scan": { id: "Scan AI", en: "Scan AI" },
+    "nav.design": { id: "Desain AI", en: "Design AI" },
+    "nav.chat": { id: "Chat Assistant", en: "Chat Assistant" },
+    "nav.story": { id: "Story & Timelapse", en: "Story & Timelapse" },
 
     // Dashboard
     "dashboard.welcome": { id: "Selamat Pagi", en: "Good Morning" },
