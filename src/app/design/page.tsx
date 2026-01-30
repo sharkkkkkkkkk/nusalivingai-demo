@@ -1,216 +1,211 @@
+
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sparkles, Send, Lightbulb, Image as ImageIcon, Loader2 } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Loader2, Upload, Sparkles, MessageSquare, Image as ImageIcon } from "lucide-react"
 import Image from "next/image"
-import { generateDesignResponse } from "@/lib/design-service"
-
-interface DesignMessage {
-    id: string;
-    role: 'user' | 'ai';
-    text: string;
-    images?: string[];
-}
 
 export default function DesignPage() {
-    const [messages, setMessages] = useState<DesignMessage[]>([
-        {
-            id: '1',
-            role: 'ai',
-            text: "Halo! Saya NusaDesign AI. Ceritakan ruang impianmu (Contoh: 'Kamar tidur nuansa hangat', 'Dapur minimalis 2 juta'), saya akan buatkan visualisasinya.",
-            images: [
-                "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=600",
-                "https://images.unsplash.com/photo-1616486338812-3dadae4b4f9d?auto=format&fit=crop&q=80&w=600"
-            ]
-        }
-    ])
-    const [inputValue, setInputValue] = useState("")
-    const [isGenerating, setIsGenerating] = useState(false)
-    const scrollRef = useRef<HTMLDivElement>(null)
+    const [prompt, setPrompt] = useState("")
+    const [selectedTab, setSelectedTab] = useState("text")
+    const [generatedImage, setGeneratedImage] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const [statusText, setStatusText] = useState("Sedang Mendesain...")
 
-    // Scroll to bottom on new message
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollIntoView({ behavior: 'smooth' })
-        }
-    }, [messages, isGenerating])
-
-    const handleSend = async (text: string = inputValue) => {
-        if (!text.trim()) return
-
-        const userMsg: DesignMessage = {
-            id: Date.now().toString(),
-            role: 'user',
-            text: text
-        }
-
-        setMessages(prev => [...prev, userMsg])
-        setInputValue("")
-        setIsGenerating(true)
+    const handleGenerate = async () => {
+        if (!prompt && !uploadedImage && selectedTab !== 'chat') return;
+        setIsLoading(true);
+        setGeneratedImage(null);
+        setStatusText("Memulai AI...");
 
         try {
-            const response = await generateDesignResponse(text)
-            const aiMsg: DesignMessage = {
-                id: (Date.now() + 1).toString(),
-                role: 'ai',
-                text: response.text,
-                images: response.images
+            if (selectedTab === 'image') {
+                setStatusText("Memindai Struktur Ruangan (Computer Vision)...");
+                await new Promise(r => setTimeout(r, 2000));
+                setStatusText("Mengaplikasikan Gaya Desain...");
+            } else {
+                setStatusText("Sedang Mendesain Ruangan...");
             }
-            setMessages(prev => [...prev, aiMsg])
+
+            const res = await fetch('/api/design', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: prompt + (uploadedImage ? " based on uploaded room structure" : ""),
+                    type: selectedTab
+                }),
+            });
+
+            if (!res.ok) throw new Error("Failed to generate");
+
+            const data = await res.json();
+            setGeneratedImage(data.url);
         } catch (error) {
-            console.error(error)
+            console.error(error);
+            alert("Gagal generate gambar. Coba lagi ya!");
         } finally {
-            setIsGenerating(false)
+            setIsLoading(false);
+            setStatusText("Sedang Mendesain...");
         }
     }
 
-    const quickPrompts = [
-        { label: "Kamar tidur 3x3 aesthetic", prompt: "Kamar tidur ukuran 3x3 meter aesthetic minimalis" },
-        { label: "Dapur minimalis budget hemat", prompt: "Desain dapur minimalis low budget bersih" },
-        { label: "Kamar WFH + tidur", prompt: "Desain kamar tidur gabung ruang kerja WFH produktif" },
-        { label: "Ruang tamu Japandi", prompt: "Ruang tamu gaya Japandi kayu hangat" },
-        { label: "Workspace untuk konten", prompt: "Ruang kerja studio konten kreator modern lighting rgb" },
-    ]
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setUploadedImage(reader.result as string);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 
     return (
-        <main className="min-h-screen bg-background flex flex-col font-sans">
+        <div className="min-h-screen flex flex-col bg-slate-50">
             <Navbar />
 
-            <div className="flex-1 container mx-auto px-4 py-4 md:py-8 flex gap-6 max-w-7xl h-[calc(100vh-80px)]">
-
-                {/* Main Chat Area */}
-                <Card className="flex-1 flex flex-col shadow-xl overflow-hidden border-2 border-primary/10">
-                    <div className="bg-primary/5 p-4 border-b flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-emerald-600 flex items-center justify-center shadow-lg">
-                                <Sparkles className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                                <h2 className="font-bold text-lg leading-tight">NusaDesign AI</h2>
-                                <p className="text-xs text-muted-foreground">Asisten Desain Hunian Gen Z</p>
-                            </div>
-                        </div>
-                        <div className="px-3 py-1 rounded-full border text-xs font-semibold bg-background">
-                            Beta
-                        </div>
-                    </div>
-
-                    <ScrollArea className="flex-1 p-4 md:p-6 bg-slate-50 dark:bg-slate-950/30">
-                        <div className="space-y-6">
-                            {messages.map((msg) => (
-                                <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                                    {/* Text Bubble */}
-                                    <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl p-4 shadow-sm mb-2 text-sm md:text-base ${msg.role === 'user'
-                                            ? 'bg-primary text-primary-foreground rounded-tr-sm'
-                                            : 'bg-white dark:bg-zinc-800 border rounded-tl-sm'
-                                        }`}>
-                                        {msg.text}
-                                    </div>
-
-                                    {/* Images Grid (AI Only) */}
-                                    {msg.images && msg.images.length > 0 && (
-                                        <div className="max-w-[100%] md:max-w-[85%] grid grid-cols-2 gap-2 mt-1">
-                                            {msg.images.map((img, idx) => (
-                                                <div key={idx} className="relative aspect-video rounded-xl overflow-hidden shadow-md group border-2 border-transparent hover:border-primary/50 transition-all cursor-pointer">
-                                                    <Image
-                                                        src={img}
-                                                        alt="Design result"
-                                                        fill
-                                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-
-                            {isGenerating && (
-                                <div className="flex flex-col items-start max-w-[75%]">
-                                    <div className="bg-white dark:bg-zinc-800 border rounded-2xl rounded-tl-sm p-4 shadow-sm flex items-center gap-3">
-                                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                                        <span className="text-sm text-muted-foreground animate-pulse">Sedang merancang visual untukmu...</span>
-                                    </div>
-                                </div>
-                            )}
-                            <div ref={scrollRef} />
-                        </div>
-                    </ScrollArea>
-
-                    {/* Input Area */}
-                    <div className="p-4 bg-background border-t">
-                        <form
-                            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-                            className="relative flex items-center gap-2"
-                        >
-                            <Button type="button" size="icon" variant="ghost" className="shrink-0 text-muted-foreground">
-                                <ImageIcon className="h-5 w-5" />
-                            </Button>
-                            <Input
-                                placeholder="Ceritain ruang impianmu... (e.g. 'Kamar tidur minimalis budget 5 juta')"
-                                className="pr-12 py-6 text-base rounded-full bg-muted/30 border-muted-foreground/20 focus-visible:ring-primary/20"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                disabled={isGenerating}
-                            />
-                            <Button
-                                type="submit"
-                                size="icon"
-                                className="absolute right-1.5 h-9 w-9 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-                                disabled={!inputValue.trim() || isGenerating}
-                            >
-                                <Send className="h-4 w-4 ml-0.5" />
-                            </Button>
-                        </form>
-                    </div>
-                </Card>
-
-                {/* Sidebar (Desktop) */}
-                <div className="hidden lg:flex w-80 flex-col gap-6">
-                    <Card className="p-5 bg-[#0f172a] text-white border-0 shadow-xl relative overflow-hidden">
-                        <div className="relative z-10">
-                            <h3 className="flex items-center gap-2 font-bold mb-4 text-emerald-400">
-                                <Lightbulb className="h-5 w-5" /> Ide Populer Gen Z
-                            </h3>
-                            <div className="flex flex-col gap-3">
-                                {quickPrompts.map((item, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => handleSend(item.prompt)}
-                                        className="text-left px-4 py-3 rounded-xl bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/50 transition-all text-sm font-medium flex items-center gap-3 group"
-                                        disabled={isGenerating}
-                                    >
-                                        <Sparkles className="h-4 w-4 text-emerald-500 opacity-50 group-hover:opacity-100 transition-opacity" />
-                                        {item.label}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        {/* Background blobs */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 blur-3xl rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/20 blur-3xl rounded-full -ml-10 -mb-10 pointer-events-none"></div>
-                    </Card>
-
-                    <div className="p-5 rounded-2xl bg-blue-50 border border-blue-100 text-blue-800 dark:bg-blue-950/20 dark:border-blue-900/50 dark:text-blue-200">
-                        <div className="flex items-start gap-3">
-                            <Lightbulb className="h-5 w-5 mt-0.5 shrink-0" />
-                            <div>
-                                <p className="font-bold text-sm mb-1">Pro Tip</p>
-                                <p className="text-sm leading-relaxed opacity-90">
-                                    Makin spesifik requestmu, makin akurat inspirasinya! Sebutin budget, ukuran ruang, atau style yang kamu suka (Japandi, Industrial, Bohemian, dll).
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+            <main className="flex-1 container py-10 max-w-5xl mx-auto px-4">
+                <div className="text-center mb-10">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-4">
+                        AI Interior Designer
+                    </h1>
+                    <p className="text-slate-600 max-w-2xl mx-auto">
+                        Wujudkan desain ruangan impianmu dalam hitungan detik. Menggunakan teknologi DALL-E dan Stable Diffusion yang disesuaikan untuk hunian Indonesia.
+                    </p>
                 </div>
 
-            </div>
-        </main>
+                <div className="grid md:grid-cols-2 gap-8 items-start">
+                    {/* INPUT SECTION */}
+                    <Card className="border-0 shadow-lg">
+                        <CardHeader>
+                            <CardTitle>Mulai Desain</CardTitle>
+                            <CardDescription>Pilih metode input yang kamu suka</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Tabs defaultValue="text" value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                                <TabsList className="grid w-full grid-cols-3 mb-6">
+                                    <TabsTrigger value="text" className="gap-2"><Sparkles className="w-4 h-4" /> Teks</TabsTrigger>
+                                    <TabsTrigger value="image" className="gap-2"><ImageIcon className="w-4 h-4" /> Foto</TabsTrigger>
+                                    <TabsTrigger value="chat" className="gap-2"><MessageSquare className="w-4 h-4" /> Chat</TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent value="text" className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Deskripsikan Ruanganmu</label>
+                                        <Textarea
+                                            placeholder="Contoh: Ruang tamu minimalis ukuran 3x4 meter dengan nuansa Japandi, ada sofa abu-abu dan tanaman monstera..."
+                                            value={prompt}
+                                            onChange={(e) => setPrompt(e.target.value)}
+                                            className="min-h-[120px]"
+                                        />
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="image" className="space-y-4">
+                                    <div
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="border-2 border-dashed border-slate-300 rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors"
+                                    >
+                                        {uploadedImage ? (
+                                            <img src={uploadedImage} alt="Uploaded" className="max-h-48 object-cover rounded-md" />
+                                        ) : (
+                                            <>
+                                                <Upload className="h-10 w-10 text-slate-400 mb-2" />
+                                                <p className="text-sm text-slate-500">Klik untuk upload foto ruangan (JPG/PNG)</p>
+                                            </>
+                                        )}
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            className="hidden"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Instruksi Tambahan (Opsional)</label>
+                                        <Input
+                                            placeholder="Misal: Ubah jadi gaya industrial, ganti warna cat jadi putih..."
+                                            value={prompt}
+                                            onChange={(e) => setPrompt(e.target.value)}
+                                        />
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="chat" className="space-y-4">
+                                    <div className="h-[200px] border rounded-md p-4 overflow-y-auto bg-white mb-2 space-y-2">
+                                        <div className="bg-slate-100 p-2 rounded-lg text-sm rounded-tl-none inline-block max-w-[80%]">
+                                            Hai! Ceritakan desain ruangan impianmu, aku akan buatkan visualnya.
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            placeholder="Contoh: Buat kamar tidur nuansa biru pastel..."
+                                            value={prompt}
+                                            onChange={(e) => setPrompt(e.target.value)}
+                                        />
+                                    </div>
+                                    <p className="text-xs text-slate-500">Ketik detail desain, lalu klik tombol Generate Desain di bawah.</p>
+                                </TabsContent>
+
+                                <Button
+                                    onClick={handleGenerate}
+                                    className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white"
+                                    disabled={isLoading || (selectedTab === 'text' && !prompt) || (selectedTab === 'image' && !uploadedImage) || (selectedTab === 'chat' && !prompt)}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {statusText}
+                                        </>
+                                    ) : (
+                                        "Generate Desain"
+                                    )}
+                                </Button>
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+
+                    {/* OUTPUT SECTION */}
+                    <div className="space-y-4">
+                        <Card className="border-0 shadow-lg overflow-hidden h-full min-h-[400px] flex flex-col">
+                            <CardHeader>
+                                <CardTitle>Hasil Visual</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex-1 flex items-center justify-center bg-slate-100 p-0 relative group">
+                                {generatedImage ? (
+                                    <div className="relative w-full h-full min-h-[400px]">
+                                        <Image
+                                            src={generatedImage}
+                                            alt="Generated Design"
+                                            fill
+                                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                            <Button variant="secondary" size="sm">Download HD</Button>
+                                            <Button variant="secondary" size="sm">Simpan ke Planner</Button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-center p-8 text-slate-400">
+                                        <Sparkles className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                                        <p>Hasil desain AI akan muncul di sini</p>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </main>
+            <Footer />
+        </div>
     )
 }

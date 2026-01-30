@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function MarketplacePage() {
     const professionals = [
@@ -100,7 +108,36 @@ export default function MarketplacePage() {
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-4 border-t">
-                                    <Button variant="outline" onClick={() => alert("Fitur Portofolio Lengkap akan segera hadir!")}>Lihat Portofolio</Button>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="outline">Lihat Portofolio</Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-3xl">
+                                            <DialogHeader>
+                                                <DialogTitle>Portofolio {pro.name}</DialogTitle>
+                                                <DialogDescription>
+                                                    Koleksi proyek {pro.role} yang telah diselesaikan.
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                                                {[1, 2, 3, 4, 5, 6].map((i) => (
+                                                    <div key={i} className="aspect-square relative rounded-lg overflow-hidden bg-slate-100">
+                                                        <img
+                                                            src={`https://source.unsplash.com/random/400x400/?interior,home,${i}`}
+                                                            alt={`Project ${i}`}
+                                                            className="object-cover w-full h-full hover:scale-110 transition-transform duration-500"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400&h=400&fit=crop";
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="flex justify-end mt-4">
+                                                <Button className="w-full sm:w-auto">Unduh Katalog PDF</Button>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
                                     <Button className="gap-2" onClick={() => window.open(`https://wa.me/?text=Halo saya tertarik dengan jasa Anda di NusaLiving`, '_blank')}>
                                         <MessageSquare className="h-4 w-4" />
                                         Hubungi

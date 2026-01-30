@@ -4,40 +4,40 @@ import Link from "next/link"
 export function FeatureSection() {
     const features = [
         {
-            title: "AI Site Scan & Housing Analysis",
-            description: "Menganalisis kelayakan lokasi berdasarkan kontur dasar, risiko lingkungan, dan potensi efisiensi energi untuk rekomendasi hunian yang tepat.",
+            title: "AI Property Discovery",
+            description: "Pencarian hunian cerdas dengan filter gaya hidup, lokasi, dan budget. Temukan 'hidden gem' properti dengan AI.",
             icon: Map,
-            href: "/dashboard/site-scan",
+            href: "/explore",
         },
         {
-            title: "AI Housing Planner",
-            description: "Memberikan rekomendasi tipe hunian, estimasi biaya, waktu pembangunan, dan tingkat keterjangkauan berbasis skema pembiayaan perumahan.",
+            title: "AI Interior Design",
+            description: "Visualisasikan renovasi ruangan dalam hitungan detik. Dari foto ruangan kosong menjadi hunian impian dengan teknologi Generative AI.",
             icon: Home,
-            href: "/dashboard/planner",
+            href: "/design",
         },
         {
-            title: "Modular & Sustainable Housing Catalog",
-            description: "Katalog rumah modular dan konvensional berkelanjutan dengan informasi harga, material lokal, durasi konstruksi, dan estimasi emisi karbon.",
+            title: "Smart Housing Score",
+            description: "Sistem skor cerdas (Affordability, Access, Gen Z Fit) untuk membantu Anda mengambil keputusan pembelian properti terbaik.",
             icon: Package,
-            href: "/dashboard/catalog",
+            href: "/explore",
         },
         {
-            title: "Marketplace Perencana Hunian Lokal",
-            description: "Menghubungkan tukang dan arsitek lokal terverifikasi dengan pengguna melalui sistem rating, portofolio, dan estimasi jasa berbasis lokasi.",
+            title: "AI Decision Chatbot",
+            description: "Asisten pribadi 24/7 yang siap menjawab pertanyaan seputar KPR, legalitas, hingga rekomendasi material bangunan.",
             icon: Store,
-            href: "/dashboard/marketplace",
+            href: "/chat",
         },
         {
-            title: "Blockchain-based Verification",
-            description: "Sistem pencatatan dokumen dan riwayat proyek berbasis hash untuk transparansi dan kepercayaan (Future-ready).",
+            title: "Blockchain Verification",
+            description: "Sistem verifikasi kepemilikan aset digital dan dokumen penting untuk keamanan transaksi properti masa depan.",
             icon: ShieldCheck,
             href: "/dashboard/blockchain",
         },
         {
-            title: "IoT Housing Dashboard",
-            description: "Monitoring konsumsi energi dan air untuk mendukung efisiensi dan pelaporan ESG sederhana (Optional).",
+            title: "Lifestyle Insights",
+            description: "Data mendalam tentang karakter lingkungan, komunitas, dan vibe suatu kawasan agar Anda tidak salah pilih lokasi.",
             icon: Activity,
-            href: "/dashboard/iot",
+            href: "/explore",
         },
     ]
 

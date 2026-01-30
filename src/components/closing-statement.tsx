@@ -8,7 +8,7 @@ export function ClosingStatement() {
             <div className="container px-4 md:px-6 mx-auto text-center">
                 <div className="max-w-4xl mx-auto space-y-8">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-slate-800 leading-tight">
-                        NusaLiving AI bukan sekadar platform desain rumah<br className="hidden md:inline" />tetapi fondasi pengambilan keputusan hunian yang lebih adil, terjangkau, dan berkelanjutan.
+                        Platform eksplorasi, perencanaan, dan<br className="hidden md:inline" />pengambilan keputusan hunian berbasis AI untuk masyarakat Indonesia.
                     </h2>
 
                     <div className="flex justify-center gap-4">

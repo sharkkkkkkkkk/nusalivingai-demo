@@ -1,16 +1,25 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Bot, User, Sparkles, Loader2, Paperclip } from "lucide-react"
-import { sendMessageToAI, ChatMessage } from "@/lib/chatbot-service"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
+interface ChatMessage {
+    id: string;
+    role: 'user' | 'ai';
+    content: string;
+}
+
+
+
 export default function ChatPage() {
+    const searchParams = useSearchParams()
     const [messages, setMessages] = useState<ChatMessage[]>([
         {
             id: '1',
@@ -21,6 +30,13 @@ export default function ChatPage() {
     const [inputValue, setInputValue] = useState("")
     const [isTyping, setIsTyping] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const context = searchParams.get('context')
+        if (context) {
+            setInputValue(context)
+        }
+    }, [searchParams])
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -42,10 +58,36 @@ export default function ChatPage() {
         setIsTyping(true)
 
         try {
-            const aiMsg = await sendMessageToAI(userMsg.content, messages)
+            // Prepare context
+            const contextMessages = [...messages, userMsg].slice(-10).map(m => ({
+                role: m.role === 'ai' ? 'assistant' : 'user', // Map 'ai' to 'assistant' for OpenAI
+                content: m.content
+            }));
+
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: contextMessages }),
+            });
+
+            if (!res.ok) throw new Error("API Error");
+
+            const data = await res.json();
+
+            const aiMsg: ChatMessage = {
+                id: (Date.now() + 1).toString(),
+                role: 'ai',
+                content: data.content
+            }
             setMessages(prev => [...prev, aiMsg])
         } catch (error) {
             console.error(error)
+            const errorMsg: ChatMessage = {
+                id: (Date.now() + 1).toString(),
+                role: 'ai',
+                content: "Maaf, terjadi kesalahan koneksi. Silakan coba lagi."
+            }
+            setMessages(prev => [...prev, errorMsg])
         } finally {
             setIsTyping(false)
         }

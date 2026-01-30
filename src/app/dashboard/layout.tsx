@@ -50,16 +50,15 @@ export default function DashboardLayout({
 
     const navigation = [
         { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Cari Hunian (AI)", href: "/explore", icon: MapIcon },
+        { name: "AI Interior Design", href: "/design", icon: ImageIcon },
+        { name: "AI Assistant", href: "/chat", icon: MessageSquare },
         { name: "My Planner", href: "/dashboard/planner", icon: Home },
-        { name: "Galeri Desain", href: "/dashboard/gallery", icon: ImageIcon },
+        { name: "Jasa Ahli", href: "/dashboard/marketplace", icon: Store },
         { name: "Smart Home (IoT)", href: "/dashboard/iot", icon: Wifi },
         { name: "Blockchain Verify", href: "/dashboard/blockchain", icon: ShieldCheck },
-        { name: "AI Design Chat", href: "/dashboard/design-chat", icon: MessageSquare },
         { name: "Material Scanner", href: "/dashboard/scanner", icon: ScanLine },
-        { name: "Site Analysis", href: "/dashboard/site-scan", icon: MapIcon },
         { name: "Material Catalog", href: "/dashboard/catalog", icon: Package },
-        { name: "Jasa Ahli", href: "/dashboard/marketplace", icon: Store },
-        { name: "Panduan Hunian", href: "/dashboard/guide", icon: BookOpen },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ]
 

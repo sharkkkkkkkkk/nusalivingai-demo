@@ -23,9 +23,9 @@ export function HeroSection() {
               Platform cerdas untuk membantu masyarakat Indonesia merencanakan hunian yang aman, berkelanjutan, dan siap pembiayaan.
             </p>
             <div className="flex flex-col w-full gap-3 sm:flex-row sm:w-auto mt-4">
-              <Link href="/dashboard/planner" className="w-full sm:w-auto">
+              <Link href="/explore" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full gap-2">
-                  Mulai Rencanakan Hunian
+                  Cari Hunian & Desain
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>

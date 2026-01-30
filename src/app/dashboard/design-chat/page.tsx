@@ -25,8 +25,6 @@ type RoomContext = {
     styleKeywords: string
 }
 
-const UNSPLASH_ACCESS_KEY = "YOUR_UNSPLASH_ACCESS_KEY" // Replace with environment variable
-
 export default function DesignChatPage() {
     const [input, setInput] = useState("")
     const [loading, setLoading] = useState(false)
@@ -45,231 +43,52 @@ export default function DesignChatPage() {
         }
     }, [messages])
 
-    // Enhanced Room Type Detection for Gen Z
-    const detectRoomContext = (text: string): RoomContext | null => {
-        const lowerText = text.toLowerCase()
-
-        // Bedroom Detection
-        if (lowerText.match(/\b(kamar tidur|bedroom|kamar|bobo|tidur)\b/)) {
-            return {
-                type: "Kamar Tidur",
-                keywords: ["modern bedroom interior", "minimalist bedroom design", "cozy small bedroom", "bedroom furniture layout"],
-                styleKeywords: "modern minimalist bedroom interior cozy furniture",
-                genZTips: [
-                    "💡 Gunakan kasur platform tanpa bed frame buat hemat ruang",
-                    "📱 Sediakan power outlet dekat tempat tidur untuk charging gadget",
-                    "🎨 Warna netral (beige, gray) bikin ruangan keliatan luas",
-                    "🪴 Tambah tanaman mini buat vibe aesthetic Instagram-able"
-                ]
-            }
-        }
-
-        // Kitchen Detection
-        if (lowerText.match(/\b(dapur|kitchen|masak)\b/)) {
-            return {
-                type: "Dapur",
-                keywords: ["modern kitchen interior", "small kitchen design", "minimalist kitchen cabinets", "kitchen interior"],
-                styleKeywords: "modern minimalist kitchen interior design minimalist compact",
-                genZTips: [
-                    "🔥 Kompor tanam lebih hemat ruang & aesthetic daripada kompor biasa",
-                    "📦 Rak gantung atau hook untuk alat masak yang sering dipakai",
-                    "✨ Cabinet warna terang bikin dapur kecil keliatan lega",
-                    "💰 Budget friendly: cat ulang cabinet lama + ganti handle baru"
-                ]
-            }
-        }
-
-        // Bathroom Detection
-        if (lowerText.match(/\b(kamar mandi|bathroom|toilet|wc)\b/)) {
-            return {
-                type: "Kamar Mandi",
-                keywords: ["modern bathroom interior", "luxury bathroom design", "minimalist bathroom shower", "bathroom tiles"],
-                styleKeywords: "modern bathroom interior luxury minimalist clean",
-                genZTips: [
-                    "🚿 Shower tanpa partisi (walk-in) bikin kamar mandi keliatan luas",
-                    "🪞 Cermin besar + lampu LED strip = vibe hotel mewah",
-                    "🌿 Tanaman tahan lembab (lidah mertua) buat sentuhan natural",
-                    "💡 Warna putih + abu-abu + kayu = kombinasi timeless & clean"
-                ]
-            }
-        }
-
-        // Living Room Detection
-        if (lowerText.match(/\b(ruang tamu|ruang keluarga|living room|living|tamu|keluarga)\b/)) {
-            return {
-                type: "Ruang Tamu",
-                keywords: ["modern living room interior", "minimalist living room sofa", "scandinavian living room", "cozy living room"],
-                styleKeywords: "modern living room interior scandinavian minimalist cozy",
-                genZTips: [
-                    "🛋️ Sofa 2-seater + bean bag lebih fleksibel dari sofa besar",
-                    "📺 Floating shelf untuk TV biar keliatan modern & hemat tempat",
-                    "🎨 Accent wall (1 dinding warna beda) buat focal point",
-                    "💡 Lampu kuning (warm light) bikin suasana homey & cozy"
-                ]
-            }
-        }
-
-        // Workspace/Study Detection
-        if (lowerText.match(/\b(kerja|workspace|wfh|belajar|study|kantor)\b/)) {
-            return {
-                type: "Ruang Kerja",
-                keywords: ["home office desk setup", "minimalist workspace interior", "study room design", "work from home interior"],
-                styleKeywords: "home office workspace interior desk setup minimalist",
-                genZTips: [
-                    "💻 Meja menghadap jendela = natural light baik buat produktivitas",
-                    "🪑 Invest di kursi ergonomis, punggungmu akan berterimakasih!",
-                    "📚 Pegboard atau rak minimalis buat organize alat tulis",
-                    "🎥 Setup lighting yang bagus penting buat video call/konten"
-                ]
-            }
-        }
-
-        // Dining Room Detection
-        if (lowerText.match(/\b(ruang makan|dining room|makan|dining)\b/)) {
-            return {
-                type: "Ruang Makan",
-                keywords: ["modern dining room interior", "minimalist dining table", "small dining room design", "dining area"],
-                styleKeywords: "modern dining room interior table minimalist elegant",
-                genZTips: [
-                    "🍴 Meja lipat atau extendable buat ruang kecil = game changer",
-                    "🪑 Bench seating hemat space daripada kursi individual",
-                    "💡 Pendant lamp di atas meja buat aksen dramatis",
-                    "🌿 Centerpiece simple (vas bunga/lilin) cukup buat vibe cozy"
-                ]
-            }
-        }
-
-        return null
-    }
-
-    // Fetch images from Unsplash API
-    const fetchUnsplashImages = async (query: string, count: number = 4): Promise<string[]> => {
-        try {
-            // Note: In production, use environment variables and server-side API calls
-            const response = await fetch(
-                `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=${count}&orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`
-            )
-
-            if (!response.ok) throw new Error("Unsplash API failed")
-
-            const data = await response.json()
-            return data.results.map((photo: any) => photo.urls.regular) || []
-        } catch (error) {
-            console.error("Unsplash fetch error:", error)
-            return []
-        }
-    }
-
-    // VERIFIED High-Quality Fallback Images (curated from Pexels & Unsplash)
-    const getFallbackImages = (roomType: string): string[] => {
-        const fallbacks: Record<string, string[]> = {
-            "Kamar Tidur": [
-                "https://images.pexels.com/photos/1743231/pexels-photo-1743231.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1454806/pexels-photo-1454806.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1374125/pexels-photo-1374125.jpeg?auto=compress&cs=tinysrgb&w=800"
-            ],
-            "Dapur": [
-                "https://images.pexels.com/photos/2724748/pexels-photo-2724748.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1599791/pexels-photo-1599791.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/2724749/pexels-photo-2724749.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg?auto=compress&cs=tinysrgb&w=800"
-            ],
-            "Kamar Mandi": [
-                "https://images.pexels.com/photos/1358912/pexels-photo-1358912.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1457847/pexels-photo-1457847.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1910472/pexels-photo-1910472.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/3209045/pexels-photo-3209045.jpeg?auto=compress&cs=tinysrgb&w=800"
-            ],
-            "Ruang Tamu": [
-                "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1918291/pexels-photo-1918291.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg?auto=compress&cs=tinysrgb&w=800"
-            ],
-            "Ruang Kerja": [
-                "https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/4050302/pexels-photo-4050302.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/6782567/pexels-photo-6782567.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/5833846/pexels-photo-5833846.jpeg?auto=compress&cs=tinysrgb&w=800"
-            ],
-            "Ruang Makan": [
-                "https://images.pexels.com/photos/1860382/pexels-photo-1860382.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/2343468/pexels-photo-2343468.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800",
-                "https://images.pexels.com/photos/6086445/pexels-photo-6086445.jpeg?auto=compress&cs=tinysrgb&w=800"
-            ]
-        }
-
-        return fallbacks[roomType] || [
-            "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800",
-            "https://images.pexels.com/photos/1918291/pexels-photo-1918291.jpeg?auto=compress&cs=tinysrgb&w=800",
-            "https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg?auto=compress&cs=tinysrgb&w=800",
-            "https://images.pexels.com/photos/1743231/pexels-photo-1743231.jpeg?auto=compress&cs=tinysrgb&w=800"
-        ]
-    }
-
     const handleSend = async () => {
-        if (!input.trim()) return
+        if (!input.trim()) return;
 
         const userMsg: Message = {
             id: Date.now(),
             role: "user",
             content: input
-        }
+        };
 
-        setMessages(prev => [...prev, userMsg])
-        const userInput = input
-        setInput("")
-        setLoading(true)
+        setMessages(prev => [...prev, userMsg]);
+        const userInput = input;
+        setInput("");
+        setLoading(true);
 
         try {
-            // Detect room context
-            const context = detectRoomContext(userInput)
+            const response = await fetch('/api/design-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: userInput })
+            });
 
-            if (!context) {
-                // No room detected - ask for clarification
-                setTimeout(() => {
-                    const aiMsg: Message = {
-                        id: Date.now() + 1,
-                        role: "ai",
-                        content: "Hmm, aku belum tangkep ruang apa yang kamu maksud nih 🤔\n\nBisa lebih spesifik? Misalnya:\n• \"Kamar tidur minimalis\"\n• \"Dapur kecil budget hemat\"\n• \"Ruang tamu aesthetic\"\n\nAyo coba lagi! 😊"
-                    }
-                    setMessages(prev => [...prev, aiMsg])
-                    setLoading(false)
-                }, 1000)
-                return
-            }
+            if (!response.ok) throw new Error('API request failed');
 
-            // Try to fetch from Unsplash API first
-            let images = await fetchUnsplashImages(context.styleKeywords, 4)
-
-            // Fallback to curated images if API fails
-            if (images.length === 0) {
-                images = getFallbackImages(context.type)
-            }
+            const data = await response.json();
 
             setTimeout(() => {
                 const aiMsg: Message = {
                     id: Date.now() + 1,
                     role: "ai",
-                    content: `Oke, aku paham! Kamu mau desain **${context.type}** yang kece! 🎨✨\n\nIni dia ${images.length} inspirasi desain yang cocok buat Gen Z kayak kamu:`,
-                    images: images,
-                    tips: context.genZTips,
-                    roomType: context.type
-                }
-                setMessages(prev => [...prev, aiMsg])
-                setLoading(false)
-            }, 2000)
+                    content: data.message,
+                    images: data.images || [],
+                    tips: data.tips || [],
+                    roomType: data.roomType
+                };
+                setMessages(prev => [...prev, aiMsg]);
+                setLoading(false);
+            }, 1500);
         } catch (error) {
-            console.error("Chat error:", error)
+            console.error("Chat error:", error);
             const errorMsg: Message = {
                 id: Date.now() + 1,
                 role: "ai",
-                content: "Oops! Ada kendala teknis nih 😅 Tapi tenang, aku tetap bisa kasih rekomendasi desain lewat deskripsi. Coba tanya lagi atau pilih salah satu saran di samping!"
-            }
-            setMessages(prev => [...prev, errorMsg])
-            setLoading(false)
+                content: "Oops! Ada kendala teknis nih 😅 Tapi tenang, aku tetap bisa kasih rekomendasi desain. Coba tanya lagi atau pilih salah satu saran di samping!"
+            };
+            setMessages(prev => [...prev, errorMsg]);
+            setLoading(false);
         }
     }
 
@@ -294,7 +113,6 @@ export default function DesignChatPage() {
                         <h2 className="font-bold text-primary">NusaDesign AI</h2>
                         <p className="text-xs text-muted-foreground">Asisten Desain Hunian Gen Z</p>
                     </div>
-                    <Badge className="ml-auto" variant="outline">Beta</Badge>
                 </div>
 
                 <ScrollArea className="flex-1 p-4" ref={scrollRef}>

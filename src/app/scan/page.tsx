@@ -88,36 +88,74 @@ export default function ScanPage() {
                         {/* Upload Section */}
                         <Card className="border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 transition-colors">
                             <CardHeader>
-                                <CardTitle>Upload Foto</CardTitle>
-                                <CardDescription>Format supported: JPG, PNG (Max 5MB)</CardDescription>
+                                <CardTitle>Upload Foto Material</CardTitle>
+                                <CardDescription>Foto material bangunan atau pilih dari referensi (JPG, PNG - Max 5MB)</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div className="flex flex-col items-center justify-center p-8 bg-muted/50 rounded-lg border border-muted-foreground/10 min-h-[300px] relative overflow-hidden group">
-                                    {selectedImage ? (
-                                        <Image
-                                            src={selectedImage}
-                                            alt="Preview"
-                                            fill
-                                            className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    ) : (
-                                        <div className="text-center space-y-4">
-                                            <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mx-auto">
-                                                <Upload className="h-8 w-8 text-muted-foreground" />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium">Drag & drop or click to upload</p>
-                                                <p className="text-sm text-muted-foreground">Select a clear photo of the room</p>
-                                            </div>
+                                <Tabs defaultValue="upload" className="w-full">
+                                    <TabsList className="grid w-full grid-cols-2">
+                                        <TabsTrigger value="upload">Upload Foto</TabsTrigger>
+                                        <TabsTrigger value="reference">Pilih Referensi</TabsTrigger>
+                                    </TabsList>
+
+                                    <TabsContent value="upload" className="mt-4">
+                                        <div className="flex flex-col items-center justify-center p-8 bg-muted/50 rounded-lg border border-muted-foreground/10 min-h-[300px] relative overflow-hidden group">
+                                            {selectedImage ? (
+                                                <Image
+                                                    src={selectedImage}
+                                                    alt="Preview"
+                                                    fill
+                                                    className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            ) : (
+                                                <div className="text-center space-y-4">
+                                                    <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mx-auto">
+                                                        <Upload className="h-8 w-8 text-muted-foreground" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium">Drag & drop or click to upload</p>
+                                                        <p className="text-sm text-muted-foreground">Foto material bangunan (batu bata, keramik, kayu, dll)</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                onChange={handleImageUpload}
+                                            />
                                         </div>
-                                    )}
-                                    <Input
-                                        type="file"
-                                        accept="image/*"
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                        onChange={handleImageUpload}
-                                    />
-                                </div>
+                                    </TabsContent>
+
+                                    <TabsContent value="reference" className="mt-4">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {[
+                                                { name: "Batu Bata Merah", url: "https://images.unsplash.com/photo-1611348524140-53c9a25263d6?auto=format&fit=crop&q=80&w=400" },
+                                                { name: "Keramik Granit", url: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&q=80&w=400" },
+                                                { name: "Kayu Jati", url: "https://images.unsplash.com/photo-1606744824163-985d376605aa?auto=format&fit=crop&q=80&w=400" },
+                                                { name: "Marmer Putih", url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&q=80&w=400" },
+                                                { name: "Beton Ekspos", url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=400" },
+                                                { name: "Genteng Keramik", url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=400" }
+                                            ].map((material, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    onClick={() => {
+                                                        setSelectedImage(material.url)
+                                                        setResult(null)
+                                                        setProgress(0)
+                                                    }}
+                                                    className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 ${selectedImage === material.url ? 'border-primary ring-2 ring-primary' : 'border-muted hover:border-primary/50'
+                                                        }`}
+                                                >
+                                                    <Image src={material.url} alt={material.name} fill className="object-cover" />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
+                                                        <p className="text-white text-xs font-medium">{material.name}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
 
                                 <Button
                                     className="w-full h-12 text-lg"

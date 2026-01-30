@@ -1,21 +1,45 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Play, Upload, Video, Layers } from "lucide-react"
+import { Play, Upload, Video, Layers, X, CheckCircle } from "lucide-react"
 import Image from "next/image"
 
 export default function StoryPage() {
     const [mode, setMode] = useState<"timelapse" | "comparison">("comparison")
     const [sliderValue, setSliderValue] = useState(50)
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+    const [uploadPreviews, setUploadPreviews] = useState<string[]>([])
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     // Mock images
     const beforeImage = "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=1000" // Construction / Messy
     const afterImage = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=1000" // Finished
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || [])
+        if (files.length > 0) {
+            setUploadedFiles(prev => [...prev, ...files])
+
+            // Create previews
+            files.forEach(file => {
+                const reader = new FileReader()
+                reader.onloadend = () => {
+                    setUploadPreviews(prev => [...prev, reader.result as string])
+                }
+                reader.readAsDataURL(file)
+            })
+        }
+    }
+
+    const removeFile = (index: number) => {
+        setUploadedFiles(prev => prev.filter((_, i) => i !== index))
+        setUploadPreviews(prev => prev.filter((_, i) => i !== index))
+    }
 
     return (
         <main className="min-h-screen bg-background flex flex-col">
@@ -80,7 +104,7 @@ export default function StoryPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="p-4 bg-muted/20 text-center text-sm text-uted-foreground">
+                                    <div className="p-4 bg-muted/20 text-center text-sm text-muted-foreground">
                                         Geser untuk melihat perubahan
                                     </div>
                                 </Card>
@@ -99,14 +123,63 @@ export default function StoryPage() {
                                             </div>
                                         </div>
                                     </CardContent>
-                                    <div className="p-6">
-                                        <div className="flex items-center gap-4 border-2 border-dashed border-muted p-8 rounded-lg justify-center hover:bg-muted/50 transition-colors cursor-pointer">
+                                    <div className="p-6 space-y-4">
+                                        <div
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="flex items-center gap-4 border-2 border-dashed border-muted p-8 rounded-lg justify-center hover:bg-muted/50 transition-colors cursor-pointer"
+                                        >
                                             <Upload className="h-8 w-8 text-muted-foreground" />
                                             <div className="text-left">
                                                 <p className="font-semibold">Upload progress photos</p>
                                                 <p className="text-sm text-muted-foreground">Select multiple photos to generate timelapse</p>
                                             </div>
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                multiple
+                                                className="hidden"
+                                                onChange={handleFileUpload}
+                                            />
                                         </div>
+
+                                        {uploadedFiles.length > 0 && (
+                                            <div className="space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <p className="text-sm font-medium flex items-center gap-2">
+                                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                                        {uploadedFiles.length} foto ter-upload
+                                                    </p>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            setUploadedFiles([])
+                                                            setUploadPreviews([])
+                                                        }}
+                                                    >
+                                                        Clear All
+                                                    </Button>
+                                                </div>
+                                                <div className="grid grid-cols-4 gap-2">
+                                                    {uploadPreviews.map((preview, idx) => (
+                                                        <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border">
+                                                            <Image src={preview} alt={`Upload ${idx + 1}`} fill className="object-cover" />
+                                                            <button
+                                                                onClick={() => removeFile(idx)}
+                                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            >
+                                                                <X className="h-3 w-3" />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <Button className="w-full" disabled={uploadedFiles.length < 3}>
+                                                    <Video className="mr-2 h-4 w-4" />
+                                                    Generate Timelapse {uploadedFiles.length < 3 && `(min. 3 photos)`}
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </Card>
                             )}

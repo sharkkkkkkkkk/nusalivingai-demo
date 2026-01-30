@@ -34,48 +34,29 @@ export function AIChatbot() {
         }
     }, [messages, isOpen])
 
-    const generateResponse = async (query: string) => {
-        // Simulate AI delay
-        await new Promise((resolve) => setTimeout(resolve, 1500))
+    const generateResponse = async (userMessage: Message) => {
+        try {
+            // Prepare context (last 5 messages to keep payload small but contextual)
+            const contextMessages = [...messages, userMessage].slice(-6).map(m => ({
+                role: m.role,
+                content: m.content
+            }));
 
-        const lowerQuery = query.toLowerCase()
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: contextMessages }),
+            });
 
-        // Financing & KPR
-        if (lowerQuery.includes("kpr") || lowerQuery.includes("btn") || lowerQuery.includes("bank") || lowerQuery.includes("kredit") || lowerQuery.includes("cicilan")) {
-            return "Untuk pengajuan KPR BTN melalui NusaLiving, kami menyediakan fitur 'Financing Check' instan. Anda bisa mendapatkan bunga eksklusif mulai 3.75% fixed 1 tahun dengan tenor hingga 25 tahun. Apakah Anda ingin saya arahkan ke simulasi angsuran?"
+            if (!res.ok) throw new Error("API Error");
+
+            const data = await res.json();
+            return data.content;
+        } catch (error) {
+            console.error(error);
+            // Fallback if API fails completely (network error)
+            return "Maaf, koneksi ke server NusaLiving AI sedang gangguan. Coba periksa internetmu ya!";
         }
-
-        // Site Analysis
-        if (lowerQuery.includes("lokasi") || lowerQuery.includes("tanah") || lowerQuery.includes("site") || lowerQuery.includes("banjir") || lowerQuery.includes("longsor")) {
-            return "Fitur AI Site Scan kami menggunakan data geospasial untuk menganalisis risiko banjir, kontur tanah, dan aksesibilitas. Cukup unggah foto lokasi atau pin di peta pada menu Dashboard > Site Analysis untuk mendapatkan laporan kelayakan instant."
-        }
-
-        // Design & Planner
-        if (lowerQuery.includes("desain") || lowerQuery.includes("arsitek") || lowerQuery.includes("gambar") || lowerQuery.includes("denah") || lowerQuery.includes("tipe")) {
-            return "AI Planner kami dapat men-generate denah rumah yang optimal berdasarkan luas lahan dan budget Anda. Kami memiliki database desain modular (Tipe 36, 45, hingga 70) yang hemat energi. Silakan coba menu 'My Planner' untuk mulai merancang."
-        }
-
-        // Budgeting
-        if (lowerQuery.includes("biaya") || lowerQuery.includes("harga") || lowerQuery.includes("budget") || lowerQuery.includes("dana") || lowerQuery.includes("rab")) {
-            return "Estimasi biaya sangat bergantung pada spesifikasi material. Sebagai acuan: Rumah Modular Standar NusaLiving berkisar Rp 3.5jt - 4.5jt / m2. AI Planner kami bisa menghitung RAB detail (Material + Ongkos Kerja) sesuai daerah Anda."
-        }
-
-        // Smart Home / IoT
-        if (lowerQuery.includes("iot") || lowerQuery.includes("smart") || lowerQuery.includes("listrik") || lowerQuery.includes("air") || lowerQuery.includes("kamera")) {
-            return "Platform kami terintegrasi dengan perangkat Smart Home (CCTV, Smart Lock, Power Meter). Anda bisa memonitor penggunaan energi dan keamanan rumah langsung dari Dashboard > Smart Home."
-        }
-
-        // Materials
-        if (lowerQuery.includes("material") || lowerQuery.includes("bata") || lowerQuery.includes("semen") || lowerQuery.includes("kaca") || lowerQuery.includes("atap")) {
-            return "Kami bekerja sama dengan supplier material hijau terverifikasi. Anda bisa mengecek harga terbaru dan ketersediaan stok seperti Bata Ringan, Panel Surya, atau Kusen Aluminium di menu 'Material Catalog'."
-        }
-
-        // Legal / Blockchain
-        if (lowerQuery.includes("legal") || lowerQuery.includes("sertifikat") || lowerQuery.includes("shm") || lowerQuery.includes("blokchain") || lowerQuery.includes("asli")) {
-            return "Keamanan dokumen adalah prioritas. Fitur 'Blockchain Verify' kami memungkinkan Anda memvalidasi keaslian sertifikat tanah atau IMB digital untuk mencegah penipuan properti. Cukup scan QR code pada dokumen mitra kami."
-        }
-
-        return "Saya adalah asisten virtual NusaLiving (Beta). Saya dilatih untuk membantu Anda dalam:\n\n1. Simulasi KPR & Pembiayaan\n2. Analisis Kelayakan Lahan\n3. Estimasi Biaya Bangun Rumah\n4. Rekomendasi Desain & Material\n\nBoleh tahu topik mana yang ingin Anda diskusikan?"
     }
 
     const handleSend = async () => {
@@ -93,7 +74,7 @@ export function AIChatbot() {
         setIsLoading(true)
 
         try {
-            const responseText = await generateResponse(userMsg.content)
+            const responseText = await generateResponse(userMsg)
             const aiMsg: Message = {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",

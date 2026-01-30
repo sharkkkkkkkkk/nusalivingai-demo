@@ -34,11 +34,9 @@ export function Navbar() {
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-                    <Link href="/find" className="hover:text-primary transition-colors">{t("nav.find")}</Link>
-                    <Link href="/scan" className="hover:text-primary transition-colors">{t("nav.scan")}</Link>
+                    <Link href="/explore" className="hover:text-primary transition-colors">{t("nav.find")}</Link>
                     <Link href="/design" className="hover:text-primary transition-colors">{t("nav.design")}</Link>
                     <Link href="/chat" className="hover:text-primary transition-colors">{t("nav.chat")}</Link>
-                    <Link href="/story" className="hover:text-primary transition-colors">{t("nav.story")}</Link>
                 </nav>
 
                 <div className="hidden md:flex items-center gap-4">
@@ -97,11 +95,9 @@ export function Navbar() {
                         <SheetContent>
                             <div className="flex flex-col gap-4 mt-8">
                                 <nav className="flex flex-col gap-3 mb-4">
-                                    <Link href="/find" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.find")}</Link>
-                                    <Link href="/scan" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.scan")}</Link>
+                                    <Link href="/explore" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.find")}</Link>
                                     <Link href="/design" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.design")}</Link>
                                     <Link href="/chat" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.chat")}</Link>
-                                    <Link href="/story" className="text-sm font-medium hover:text-primary transition-colors">{t("nav.story")}</Link>
                                 </nav>
                                 <div className="border-t pt-4 flex flex-col gap-2">
                                     <Link href="/login" className="w-full">
