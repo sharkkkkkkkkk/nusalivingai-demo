@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useState, useRef, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/navbar"
@@ -7,8 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send, Bot, User, Sparkles, Loader2, Paperclip } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Send, Bot, User, Sparkles, Loader2 } from "lucide-react"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 interface ChatMessage {
     id: string;
@@ -16,9 +17,7 @@ interface ChatMessage {
     content: string;
 }
 
-
-
-export default function ChatPage() {
+function ChatContent() {
     const searchParams = useSearchParams()
     const [messages, setMessages] = useState<ChatMessage[]>([
         {
@@ -28,7 +27,7 @@ export default function ChatPage() {
         }
     ])
     const [inputValue, setInputValue] = useState("")
-    const [isTyping, setIsTyping] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -40,60 +39,60 @@ export default function ChatPage() {
 
     useEffect(() => {
         if (scrollRef.current) {
-            scrollRef.current.scrollIntoView({ behavior: 'smooth' })
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight
         }
-    }, [messages, isTyping])
+    }, [messages])
 
     const handleSend = async () => {
-        if (!inputValue.trim()) return
+        if (!inputValue.trim() || isLoading) return
 
-        const userMsg: ChatMessage = {
+        const userMessage: ChatMessage = {
             id: Date.now().toString(),
             role: 'user',
             content: inputValue
         }
 
-        setMessages(prev => [...prev, userMsg])
+        setMessages(prev => [...prev, userMessage])
         setInputValue("")
-        setIsTyping(true)
+        setIsLoading(true)
 
         try {
-            // Prepare context
-            const contextMessages = [...messages, userMsg].slice(-10).map(m => ({
-                role: m.role === 'ai' ? 'assistant' : 'user', // Map 'ai' to 'assistant' for OpenAI
-                content: m.content
-            }));
-
-            const res = await fetch('/api/chat', {
+            const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: contextMessages }),
-            });
+                body: JSON.stringify({
+                    messages: [...messages, userMessage].map(m => ({
+                        role: m.role === 'ai' ? 'assistant' : 'user',
+                        content: m.content
+                    }))
+                })
+            })
 
-            if (!res.ok) throw new Error("API Error");
+            if (!response.ok) throw new Error('API request failed')
 
-            const data = await res.json();
+            const data = await response.json()
 
-            const aiMsg: ChatMessage = {
+            const aiMessage: ChatMessage = {
                 id: (Date.now() + 1).toString(),
                 role: 'ai',
                 content: data.content
             }
-            setMessages(prev => [...prev, aiMsg])
+
+            setMessages(prev => [...prev, aiMessage])
         } catch (error) {
-            console.error(error)
-            const errorMsg: ChatMessage = {
+            console.error('Chat error:', error)
+            const errorMessage: ChatMessage = {
                 id: (Date.now() + 1).toString(),
                 role: 'ai',
-                content: "Maaf, terjadi kesalahan koneksi. Silakan coba lagi."
+                content: "Maaf, ada gangguan teknis. Tapi tenang, semua fitur NusaLiving tetap bisa kamu akses langsung! Coba explore halaman Explore, Design, atau Scan ya! 😊"
             }
-            setMessages(prev => [...prev, errorMsg])
+            setMessages(prev => [...prev, errorMessage])
         } finally {
-            setIsTyping(false)
+            setIsLoading(false)
         }
     }
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
             handleSend()
@@ -101,102 +100,122 @@ export default function ChatPage() {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-background">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-teal-50">
             <Navbar />
 
-            <div className="flex-1 flex overflow-hidden">
-                {/* Sidebar (Desktop only) */}
-                <div className="w-64 border-r bg-muted/10 hidden md:block p-4">
-                    <Button variant="outline" className="w-full justify-start gap-2 mb-4" onClick={() => setMessages([])}>
-                        <Sparkles className="h-4 w-4" /> New Chat
-                    </Button>
-                    <div className="text-sm font-medium text-muted-foreground mb-2 px-2">History</div>
-                    <div className="space-y-1">
-                        <Button variant="ghost" className="w-full justify-start truncate text-xs h-9">
-                            Cari kos di Tebet
-                        </Button>
-                        <Button variant="ghost" className="w-full justify-start truncate text-xs h-9">
-                            Desain kamar minimalis
-                        </Button>
+            <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
+                <div className="mb-8 text-center">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-blue-600 text-white px-4 py-2 rounded-full mb-4">
+                        <Sparkles className="h-5 w-5" />
+                        <span className="font-semibold">AI Housing Advisor</span>
                     </div>
+                    <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                        Chat dengan NusaAI
+                    </h1>
+                    <p className="text-slate-600">
+                        Tanya apa aja tentang hunian, budget, lokasi, atau desain interior
+                    </p>
                 </div>
 
-                {/* Main Chat */}
-                <div className="flex-1 flex flex-col relative max-w-4xl mx-auto w-full">
-                    <ScrollArea className="flex-1 p-4 md:p-6">
-                        <div className="space-y-6 pb-4">
-                            {messages.map((msg) => (
-                                <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                    {msg.role === 'ai' && (
-                                        <Avatar className="h-8 w-8 border">
-                                            <AvatarImage src="/assets/bot-avatar.png" />
-                                            <AvatarFallback><Bot className="h-4 w-4" /></AvatarFallback>
-                                        </Avatar>
-                                    )}
+                <Card className="shadow-xl border-0 overflow-hidden">
+                    <ScrollArea className="h-[500px] p-6" ref={scrollRef}>
+                        <div className="space-y-4">
+                            {messages.map((message) => (
+                                <div
+                                    key={message.id}
+                                    className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                                >
+                                    <Avatar className={`h-8 w-8 ${message.role === 'ai' ? 'bg-gradient-to-br from-teal-500 to-blue-500' : 'bg-slate-200'}`}>
+                                        <AvatarFallback>
+                                            {message.role === 'ai' ? <Bot className="h-4 w-4 text-white" /> : <User className="h-4 w-4" />}
+                                        </AvatarFallback>
+                                    </Avatar>
 
-                                    <div className={`rounded-2xl p-4 max-w-[80%] text-sm leading-relaxed shadow-sm
-                                        ${msg.role === 'user'
-                                            ? 'bg-primary text-primary-foreground rounded-tr-none'
-                                            : 'bg-white dark:bg-zinc-800 border rounded-tl-none'
-                                        }`}>
-                                        <div className="whitespace-pre-wrap font-sans">
-                                            {msg.content}
-                                        </div>
+                                    <div
+                                        className={`flex-1 max-w-[80%] ${message.role === 'user'
+                                                ? 'bg-gradient-to-r from-teal-600 to-blue-600 text-white'
+                                                : 'bg-slate-100 text-slate-800'
+                                            } rounded-2xl px-4 py-3 ${message.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'
+                                            }`}
+                                    >
+                                        <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                            {message.content}
+                                        </p>
                                     </div>
-
-                                    {msg.role === 'user' && (
-                                        <Avatar className="h-8 w-8">
-                                            <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
-                                        </Avatar>
-                                    )}
                                 </div>
                             ))}
 
-                            {isTyping && (
-                                <div className="flex gap-3 justify-start">
-                                    <Avatar className="h-8 w-8 border">
-                                        <AvatarFallback><Bot className="h-4 w-4" /></AvatarFallback>
+                            {isLoading && (
+                                <div className="flex gap-3">
+                                    <Avatar className="h-8 w-8 bg-gradient-to-br from-teal-500 to-blue-500">
+                                        <AvatarFallback>
+                                            <Bot className="h-4 w-4 text-white" />
+                                        </AvatarFallback>
                                     </Avatar>
-                                    <div className="bg-muted rounded-2xl rounded-tl-none p-4 flex items-center gap-1">
-                                        <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                                        <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                                        <span className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                                    <div className="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3">
+                                        <div className="flex items-center gap-2">
+                                            <Loader2 className="h-4 w-4 animate-spin text-teal-600" />
+                                            <span className="text-sm text-slate-600">NusaAI sedang berpikir...</span>
+                                        </div>
                                     </div>
                                 </div>
                             )}
-                            <div ref={scrollRef} />
                         </div>
                     </ScrollArea>
 
-                    {/* Input Area */}
-                    <div className="p-4 border-t bg-background/50 backdrop-blur-sm">
-                        <div className="relative flex items-end gap-2 p-2 border rounded-xl bg-background shadow-sm focus-within:ring-1 focus-within:ring-primary/50">
-                            <Button variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-primary mb-[1px]">
-                                <Paperclip className="h-5 w-5" />
-                            </Button>
-                            <textarea
+                    <div className="border-t bg-white p-4">
+                        <div className="flex gap-2">
+                            <Input
+                                placeholder="Ketik pertanyaan kamu di sini..."
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Tanya soal hunian, KPR, atau desain..."
-                                className="flex-1 max-h-32 min-h-[44px] py-3 bg-transparent border-0 focus:ring-0 resize-none text-sm scrollbar-hide focus:outline-none"
-                                rows={1}
+                                onKeyPress={handleKeyPress}
+                                disabled={isLoading}
+                                className="flex-1"
                             />
                             <Button
                                 onClick={handleSend}
-                                disabled={!inputValue.trim() || isTyping}
-                                size="icon"
-                                className="h-10 w-10 mb-[1px]"
+                                disabled={!inputValue.trim() || isLoading}
+                                className="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700"
                             >
-                                {isTyping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                                <Send className="h-4 w-4" />
                             </Button>
                         </div>
-                        <p className="text-center text-[10px] text-muted-foreground mt-2">
-                            NusaLiving AI bisa salah. Selalu cek ulang informasi penting.
-                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                            {[
+                                "Cari kost di Depok budget 2 juta",
+                                "Apartemen dekat MRT",
+                                "Desain kamar tidur minimalis",
+                                "Hitung KPR rumah 500 juta"
+                            ].map((suggestion, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setInputValue(suggestion)}
+                                    className="text-xs px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-700 transition-colors"
+                                    disabled={isLoading}
+                                >
+                                    {suggestion}
+                                </button>
+                            ))}
+                        </div>
                     </div>
+                </Card>
+            </main>
+        </div>
+    )
+}
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-teal-600 mx-auto mb-4" />
+                    <p className="text-slate-600">Loading chat...</p>
                 </div>
             </div>
-        </div>
+        }>
+            <ChatContent />
+        </Suspense>
     )
 }
